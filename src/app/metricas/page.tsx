@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 function Metricas() {
   return (
     <>
-      <div className='my-10 px-10'>
+      <div className='px-10 py-10'>
         <Tabs className='w-[25rem]'>
           <TabsList className='grid w-full grid-cols-5'>
             <TabsTrigger value='tdee' className='rounded-2xl'>
