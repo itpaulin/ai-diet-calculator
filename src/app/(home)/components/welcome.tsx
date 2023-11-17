@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
 export const Welcome = () => {
   return (
     <>
@@ -20,15 +21,20 @@ export const Welcome = () => {
           className='flex h-[450px] w-[100vw]'
         ></Image>
       </div>
-
-      <div className='text-center'>
-        <span className='text-4xl font-bold  '>Bem vindo à Calculdora de Dietas Inteligente!</span>
-        <p className='pt-4 text-lg'>
-          Siga os passos para ter seu plano alimentar de acordo com seu objetivo.
-        </p>
-      </div>
-      <div className='mb-7 mt-7 flex items-center justify-center'>
-        <Button className='h-14 w-36 text-lg'>Começar</Button>
+      <div className='px-4'>
+        <div className='text-center'>
+          <span className='text-4xl font-bold  '>
+            Bem vindo à Calculdora de Dietas Inteligente!
+          </span>
+          <p className='pt-4 text-lg opacity-70'>
+            Siga os passos para ter seu plano alimentar de acordo com seu objetivo.
+          </p>
+        </div>
+        <div className='mb-7 mt-7 flex items-center justify-center'>
+          <Link href='/metricas'>
+            <Button className='h-14 w-36 text-lg'>Começar</Button>
+          </Link>
+        </div>
       </div>
     </>
   )
