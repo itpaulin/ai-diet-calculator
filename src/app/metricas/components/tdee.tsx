@@ -44,14 +44,20 @@ const tdeeSchema = z.object({
     .number()
     .int({ message: 'Arredonde seu peso, não utilize vírgulas ou ponto' })
     .positive(),
-  hasBF: z.coerce.boolean(),
+  hasBF: z.coerce.string(),
   bodyFat: z.coerce.number().positive(),
 })
 
 export const Tdee = () => {
   const form = useForm<z.infer<typeof tdeeSchema>>({
     resolver: zodResolver(tdeeSchema),
-    defaultValues: { age: undefined, bodyFat: undefined, height: undefined, weight: undefined },
+    defaultValues: {
+      age: undefined,
+      bodyFat: undefined,
+      height: undefined,
+      weight: undefined,
+      hasBF: undefined,
+    },
   })
   const onSubmit = (values: z.infer<typeof tdeeSchema>) => {
     //POST
@@ -59,7 +65,10 @@ export const Tdee = () => {
   }
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='flex flex-col items-center justify-center space-y-8'
+      >
         <FormField
           control={form.control}
           name='gender'
@@ -159,21 +168,23 @@ export const Tdee = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name='bodyFat'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <div className='flex px-5'>
-                <FormLabel>Percentual de gordura</FormLabel>
-                <FormControl className='ml-8'>
-                  <Input type={'number'} placeholder='Informe o percentual' {...field} />
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {form.watch('hasBF') === 'true' && (
+          <FormField
+            control={form.control}
+            name='bodyFat'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <div className='flex px-5'>
+                  <FormLabel>Percentual de gordura</FormLabel>
+                  <FormControl className='ml-8'>
+                    <Input type={'number'} placeholder='Informe o percentual' {...field} />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button type='submit' variant='outline'>
           Submit

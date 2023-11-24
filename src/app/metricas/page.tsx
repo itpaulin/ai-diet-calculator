@@ -35,7 +35,7 @@ function Metricas() {
           </TabsContent>
         </Tabs>
       </div>
-      <NavegationButtons Back={() => console.log('oi')} Next={() => console.log('oi')} />
+      {/* <NavegationButtons Back={() => console.log('oi')} Next={() => console.log('oi')} /> */}
     </>
   )
 }
