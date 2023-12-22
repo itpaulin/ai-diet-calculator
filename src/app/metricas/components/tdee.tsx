@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -187,7 +186,7 @@ export const Tdee = () => {
         )}
 
         <Button type='submit' variant='outline'>
-          Submit
+          Enviar
         </Button>
       </form>
     </Form>
