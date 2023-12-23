@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input'
 import Gender from '@/enums/Gender'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
+import { useState } from 'react'
 
 const tdeeSchema = z.object({
   gender: z.nativeEnum(Gender, {
@@ -44,10 +45,12 @@ const tdeeSchema = z.object({
     .int({ message: 'Arredonde seu peso, não utilize vírgulas ou ponto' })
     .positive(),
   hasBF: z.coerce.string(),
-  bodyFat: z.coerce.number().positive(),
+  bodyFat: z.coerce.number().positive().optional(),
 })
 
 export const Tdee = () => {
+  const [output, setOutput] = useState('')
+  const [hasBF, setHasBF] = useState<boolean>(false)
   const form = useForm<z.infer<typeof tdeeSchema>>({
     resolver: zodResolver(tdeeSchema),
     defaultValues: {
@@ -60,135 +63,170 @@ export const Tdee = () => {
   })
   const onSubmit = (values: z.infer<typeof tdeeSchema>) => {
     //POST
-    console.log('VALUES:', values)
+    setOutput(JSON.stringify(values, undefined, 2))
   }
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='flex flex-col items-center justify-center space-y-8'
-      >
-        <FormField
-          control={form.control}
-          name='gender'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <div className='flex px-5'>
-                <FormLabel>Sexo</FormLabel>
-                <FormControl className='ml-8 pt-2'>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className='flex'
-                    {...field}
-                  >
-                    <FormItem>
-                      <FormControl>
-                        <RadioGroupItem value='Male' />
-                      </FormControl>
-                      <Label className='pl-1 pt-[2px]'>Masculino</Label>
-                    </FormItem>
-                    <FormItem>
-                      <FormControl>
-                        <RadioGroupItem value='Female' />
-                      </FormControl>
-                      <Label className='pl-1 pt-[2px]'>Feminino</Label>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='age'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <div className='flex px-5'>
-                <FormLabel>Idade</FormLabel>
-                <FormControl className='ml-8'>
-                  <Input type={'number'} placeholder='Sua idade' {...field} />
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='height'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <div className='flex px-5'>
-                <FormLabel>Altura</FormLabel>
-                <FormControl className='ml-8'>
-                  <Input type={'number'} placeholder='Sua altura em cm' {...field} />
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='weight'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <div className='flex px-5'>
-                <FormLabel>Peso</FormLabel>
-                <FormControl className='ml-8'>
-                  <Input type={'number'} placeholder='Seu peso em kg' {...field} />
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='hasBF'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <div className='flex px-5'>
-                <FormLabel>Sabe seu precentual de gordura (BF%) ?</FormLabel>
-                <FormControl className='ml-8 pt-2'>
-                  <RadioGroup onChange={field.onChange} className='flex'>
-                    <RadioGroupItem value='true' />
-                    <Label className='pt-[2px]'>Sim</Label>
-                    <RadioGroupItem value='false' />
-                    <Label className='pt-[2px]'>Não</Label>
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {form.watch('hasBF') === 'true' && (
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className='flex flex-col items-center justify-center space-y-8'
+        >
           <FormField
             control={form.control}
-            name='bodyFat'
+            name='gender'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
                 <div className='flex px-5'>
-                  <FormLabel>Percentual de gordura</FormLabel>
-                  <FormControl className='ml-8'>
-                    <Input type={'number'} placeholder='Informe o percentual' {...field} />
+                  <FormLabel>Sexo</FormLabel>
+                  <FormControl className='ml-8 pt-2'>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className='flex'
+                      {...field}
+                    >
+                      <FormItem>
+                        <FormControl>
+                          <RadioGroupItem value='Male' />
+                        </FormControl>
+                        <Label className='pl-1 pt-[2px]'>Masculino</Label>
+                      </FormItem>
+                      <FormItem>
+                        <FormControl>
+                          <RadioGroupItem value='Female' />
+                        </FormControl>
+                        <Label className='pl-1 pt-[2px]'>Feminino</Label>
+                      </FormItem>
+                    </RadioGroup>
                   </FormControl>
                 </div>
                 <FormMessage />
               </FormItem>
             )}
           />
-        )}
+          <FormField
+            control={form.control}
+            name='age'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <div className='flex px-5'>
+                  <FormLabel>Idade</FormLabel>
+                  <FormControl className='ml-8'>
+                    <Input type={'number'} placeholder='Sua idade' {...field} />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button type='submit' variant='outline'>
-          Enviar
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name='height'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <div className='flex px-5'>
+                  <FormLabel>Altura</FormLabel>
+                  <FormControl className='ml-8'>
+                    <Input type={'number'} placeholder='Sua altura em cm' {...field} />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='weight'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <div className='flex px-5'>
+                  <FormLabel>Peso</FormLabel>
+                  <FormControl className='ml-8'>
+                    <Input type={'number'} placeholder='Seu peso em kg' {...field} />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
+            control={form.control}
+            name='hasBF'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <div className='flex px-5'>
+                  <FormLabel>Sabe seu precentual de gordura (BF%) ?</FormLabel>
+                  <FormControl className='ml-8 pt-2'>
+                    <RadioGroup onChange={field.onChange} className='flex'>
+                      <RadioGroupItem value={true} onClick={() => setHasBF(true)} />
+                      <Label className='pt-[2px]'>Sim</Label>
+                      <RadioGroupItem value={false} onClick={() => setHasBF(false)} />
+                      <Label className='pt-[2px]'>Não</Label>
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+          <FormField
+            control={form.control}
+            name='hasBF'
+            render={({ field }) => (
+              <FormItem className='flex flex-row space-y-3'>
+                <FormLabel className='mr-24 flex w-24'>
+                  Sabe seu precentual de gordura (BF%) ?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className='flex flex-row space-y-1'
+                  >
+                    <FormItem className='flex items-center space-x-3 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value={true} />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Sim</FormLabel>
+                    </FormItem>
+                    <FormItem className='flex items-center space-x-3 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value={false} />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Não</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {form.watch('hasBF') && (
+            <FormField
+              control={form.control}
+              name='bodyFat'
+              render={({ field }) => (
+                <FormItem className='flex flex-col'>
+                  <div className='flex px-5'>
+                    <FormLabel>Percentual de gordura</FormLabel>
+                    <FormControl className='ml-8'>
+                      <Input type={'number'} placeholder='Informe o percentual' {...field} />
+                    </FormControl>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <Button type='submit' variant='outline'>
+            Enviar
+          </Button>
+        </form>
+      </Form>
+      <pre>{output}</pre>
+    </>
   )
 }
