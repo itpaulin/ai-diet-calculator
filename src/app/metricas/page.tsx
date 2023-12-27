@@ -16,7 +16,9 @@ function Metricas() {
     setTab(value)
   }
   useEffect(() => {
-    onTabChange('objective')
+    if (hasTdee === true) {
+      onTabChange('objective')
+    }
   }, [hasTdee])
 
   return (
