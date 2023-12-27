@@ -31,7 +31,7 @@ function Metricas() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value='tdee'>
-            <Tdee />
+            <Tdee setHasTdee={setHasTdee} />
           </TabsContent>
         </Tabs>
       </div>
