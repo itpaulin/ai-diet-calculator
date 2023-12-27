@@ -1,18 +1,28 @@
 'use client'
 import { NavegationButtons } from '@/components/ui/navegation-buttons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Tdee } from './components/tdee'
+import { ITdee } from '@/models'
 function Metricas() {
+  const [tab, setTab] = useState<string>('tdee')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasGoal, setHasGoal] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
   const [hasDiet, setHasDiet] = useState<boolean>(false)
+  const [formTdee, setFormTdee] = useState<ITdee>()
+
+  const onTabChange = (value: string) => {
+    setTab(value)
+  }
+  useEffect(() => {
+    onTabChange('objective')
+  }, [hasTdee])
 
   return (
     <>
       <div className='px-10 py-10'>
-        <Tabs defaultValue='tdee' className='w-[25rem]'>
+        <Tabs value={tab} onValueChange={onTabChange} className='w-[25rem]'>
           <TabsList className='grid w-full grid-cols-5'>
             <TabsTrigger value='tdee' className='rounded-2xl'>
               TDEE
@@ -31,7 +41,7 @@ function Metricas() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value='tdee'>
-            <Tdee setHasTdee={setHasTdee} />
+            <Tdee setHasTdee={setHasTdee} setPayload={setFormTdee} />
           </TabsContent>
         </Tabs>
       </div>
