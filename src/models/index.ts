@@ -5,6 +5,6 @@ export interface ITdee {
   age: number
   height: number
   weight: number
-  hasBF: boolean
+  hasBF: string
   bodyFat?: number
 }

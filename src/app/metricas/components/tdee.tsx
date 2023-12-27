@@ -17,7 +17,13 @@ import { Input } from '@/components/ui/input'
 import Gender from '@/enums/Gender'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { ITdee } from '@/models'
+
+interface TdeeProps {
+  setHasTdee: Dispatch<SetStateAction<boolean>>
+  setPayload: Dispatch<SetStateAction<ITdee | undefined>>
+}
 
 const tdeeSchema = z.object({
   gender: z.nativeEnum(Gender, {
@@ -48,7 +54,7 @@ const tdeeSchema = z.object({
   bodyFat: z.coerce.number().positive().optional(),
 })
 
-export const Tdee = () => {
+export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
   const [output, setOutput] = useState('')
   const [hasBF, setHasBF] = useState<boolean>(false)
   const form = useForm<z.infer<typeof tdeeSchema>>({
@@ -62,8 +68,8 @@ export const Tdee = () => {
     },
   })
   const onSubmit = (values: z.infer<typeof tdeeSchema>) => {
-    //POST
-    setOutput(JSON.stringify(values, undefined, 2))
+    setPayload(values)
+    setHasTdee(true)
   }
   return (
     <>
