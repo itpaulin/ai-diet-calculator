@@ -17,8 +17,10 @@ import { Input } from '@/components/ui/input'
 import Gender from '@/enums/Gender'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { ITdee } from '@/models'
+import { KatchMcArdle, MifflinStJeor } from '@/functions/tmb'
+import { Badge } from '@/components/ui/badge'
 
 interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
@@ -50,13 +52,14 @@ const tdeeSchema = z.object({
     .number()
     .int({ message: 'Arredonde seu peso, não utilize vírgulas ou ponto' })
     .positive(),
-  hasBF: z.coerce.string(),
+  hasBF: z.coerce.boolean(),
   bodyFat: z.coerce.number().positive().optional(),
 })
 
 export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
   const [output, setOutput] = useState('')
   const [hasBF, setHasBF] = useState<boolean>(false)
+  const [bmr, setBmr] = useState<number | boolean>()
   const form = useForm<z.infer<typeof tdeeSchema>>({
     resolver: zodResolver(tdeeSchema),
     defaultValues: {
@@ -67,9 +70,28 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
       hasBF: undefined,
     },
   })
+  const handleBmr = (values: any) => {
+    if (values.hasBF === true) {
+      if (values.bodyFat && values.bodyFat > 0) {
+        setBmr(KatchMcArdle(values.weight, values.bodyFat))
+      }
+    } else {
+      setBmr(MifflinStJeor(values))
+    }
+  }
+  const watchFields = form.watch(['gender', 'age', 'height', 'weight', 'hasBF', 'bodyFat'])
+
+  useEffect(() => {
+    const [gender, age, height, weight, hasBF, bodyFat] = watchFields
+    setBmr(false)
+    if (gender && age && height && weight && hasBF !== undefined) {
+      handleBmr(form.getValues())
+    }
+  }, [watchFields, form.getValues('bodyFat')])
   const onSubmit = (values: z.infer<typeof tdeeSchema>) => {
     setPayload(values)
     setHasTdee(true)
+    setOutput(JSON.stringify(values, null, 2))
   }
   return (
     <>
@@ -157,26 +179,6 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
               </FormItem>
             )}
           />
-          {/* <FormField
-            control={form.control}
-            name='hasBF'
-            render={({ field }) => (
-              <FormItem className='flex flex-col'>
-                <div className='flex px-5'>
-                  <FormLabel>Sabe seu precentual de gordura (BF%) ?</FormLabel>
-                  <FormControl className='ml-8 pt-2'>
-                    <RadioGroup onChange={field.onChange} className='flex'>
-                      <RadioGroupItem value={true} onClick={() => setHasBF(true)} />
-                      <Label className='pt-[2px]'>Sim</Label>
-                      <RadioGroupItem value={false} onClick={() => setHasBF(false)} />
-                      <Label className='pt-[2px]'>Não</Label>
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
           <FormField
             control={form.control}
             name='hasBF'
@@ -215,7 +217,7 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
               name='bodyFat'
               render={({ field }) => (
                 <FormItem className='flex flex-col'>
-                  <div className='flex px-5'>
+                  <div className='flex items-center space-x-3 px-5'>
                     <FormLabel>Percentual de gordura</FormLabel>
                     <FormControl className='ml-8'>
                       <Input type={'number'} placeholder='Informe o percentual' {...field} />
@@ -226,9 +228,18 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
               )}
             />
           )}
-
+          {bmr && (
+            <div className='w-full rounded-lg bg-sky-100 text-center'>
+              <span className=' text-lg font-semibold'>
+                Sua taxa metabólica basal (TMB/BMR):
+                <Badge className='ml-2 bg-green-500 text-sm hover:bg-green-700'>
+                  {Number(bmr).toFixed(0)}
+                </Badge>
+              </span>
+            </div>
+          )}
           <Button type='submit' variant='outline'>
-            Enviar
+            Continuar
           </Button>
         </form>
       </Form>
