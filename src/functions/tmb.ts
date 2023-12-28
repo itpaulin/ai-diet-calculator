@@ -9,7 +9,7 @@ export function MifflinStJeor({ age, gender, hasBF, height, weight }: ITdee) {
   }
 }
 
-export function KatchMcArdle({ weight, bodyFat }: ITdee) {
-  const leanBodyMass = (bodyFat! / 100) * weight
+export function KatchMcArdle(weight: number, bodyFat: number) {
+  const leanBodyMass = (bodyFat! / 10) * weight
   return 370 + 9.82 * leanBodyMass
 }
