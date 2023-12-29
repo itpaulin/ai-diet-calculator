@@ -194,10 +194,8 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
             control={form.control}
             name='hasBF'
             render={({ field }) => (
-              <FormItem className='flex flex-row space-y-3'>
-                <FormLabel className='mr-24 flex w-24'>
-                  Sabe seu precentual de gordura (BF%) ?
-                </FormLabel>
+              <FormItem className='grid grid-cols-2'>
+                <FormLabel className='flex pr-10'>Sabe seu precentual de gordura (BF%) ?</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
