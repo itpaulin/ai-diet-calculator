@@ -21,6 +21,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { ITdee } from '@/models'
 import { KatchMcArdle, MifflinStJeor } from '@/functions/tmb'
 import { Badge } from '@/components/ui/badge'
+import ActivityLevel from '@/enums/ActivityLevel'
 
 interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
@@ -54,6 +55,18 @@ const tdeeSchema = z.object({
     .positive(),
   hasBF: z.coerce.boolean(),
   bodyFat: z.coerce.number().positive().optional(),
+  activityLevel: z.nativeEnum(ActivityLevel, {
+    errorMap: (issue, _ctx) => {
+      switch (issue.code) {
+        case 'invalid_type':
+          return { message: 'Selecione um nível de atividade adequado' }
+        case 'invalid_enum_value':
+          return { message: 'Selecione um nível de atividade adequado' }
+        default:
+          return { message: 'Nível inválido' }
+      }
+    },
+  }),
 })
 
 export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
@@ -98,37 +111,35 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='flex flex-col items-center justify-center space-y-8'
+          className=' grid grid-rows-2 items-center gap-4 pl-10 '
         >
           <FormField
             control={form.control}
             name='gender'
             render={({ field }) => (
-              <FormItem className='flex flex-col'>
-                <div className='flex px-5'>
-                  <FormLabel>Sexo</FormLabel>
-                  <FormControl className='ml-8 pt-2'>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className='flex'
-                      {...field}
-                    >
-                      <FormItem>
-                        <FormControl>
-                          <RadioGroupItem value='Male' />
-                        </FormControl>
-                        <Label className='pl-1 pt-[2px]'>Masculino</Label>
-                      </FormItem>
-                      <FormItem>
-                        <FormControl>
-                          <RadioGroupItem value='Female' />
-                        </FormControl>
-                        <Label className='pl-1 pt-[2px]'>Feminino</Label>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                </div>
+              <FormItem className='grid grid-cols-2'>
+                <FormLabel className='pt-7'>Sexo</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className=''
+                    {...field}
+                  >
+                    <FormItem className='flex items-center space-x-1 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value={Gender.Male} />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Masculino</FormLabel>
+                    </FormItem>
+                    <FormItem className='flex items-center space-x-1 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value={Gender.Female} />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Feminino</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -138,10 +149,10 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
             name='age'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
-                <div className='flex px-5'>
+                <div className='grid grid-cols-2'>
                   <FormLabel>Idade</FormLabel>
-                  <FormControl className='ml-8'>
-                    <Input type={'number'} placeholder='Sua idade' {...field} />
+                  <FormControl className=''>
+                    <Input type={'number'} placeholder='Em anos' {...field} />
                   </FormControl>
                 </div>
                 <FormMessage />
@@ -154,10 +165,10 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
             name='height'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
-                <div className='flex px-5'>
+                <div className='grid grid-cols-2'>
                   <FormLabel>Altura</FormLabel>
-                  <FormControl className='ml-8'>
-                    <Input type={'number'} placeholder='Sua altura em cm' {...field} />
+                  <FormControl className=''>
+                    <Input type={'number'} placeholder='Em centímetros' {...field} />
                   </FormControl>
                 </div>
                 <FormMessage />
@@ -169,10 +180,10 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
             name='weight'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
-                <div className='flex px-5'>
+                <div className='grid grid-cols-2'>
                   <FormLabel>Peso</FormLabel>
-                  <FormControl className='ml-8'>
-                    <Input type={'number'} placeholder='Seu peso em kg' {...field} />
+                  <FormControl>
+                    <Input type={'number'} placeholder='Em quilogramas' {...field} />
                   </FormControl>
                 </div>
                 <FormMessage />
@@ -217,10 +228,10 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
               name='bodyFat'
               render={({ field }) => (
                 <FormItem className='flex flex-col'>
-                  <div className='flex items-center space-x-3 px-5'>
+                  <div className='grid grid-cols-2'>
                     <FormLabel>Percentual de gordura</FormLabel>
-                    <FormControl className='ml-8'>
-                      <Input type={'number'} placeholder='Informe o percentual' {...field} />
+                    <FormControl className=''>
+                      <Input type={'number'} placeholder='Em porcentagem' {...field} />
                     </FormControl>
                   </div>
                   <FormMessage />
@@ -238,6 +249,51 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
               </span>
             </div>
           )}
+          <FormField
+            control={form.control}
+            name='activityLevel'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel>
+                  Como você classificaria seu nível de atividade física fora da academia?
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className='flex flex-col'
+                  >
+                    <FormItem className='items-center space-x-3'>
+                      <FormControl>
+                        <RadioGroupItem value={ActivityLevel.Sedentary} />
+                      </FormControl>
+                      <FormLabel className='font-normal'>
+                        Sedentário - passa o dia sentado / trabalho em escritório
+                      </FormLabel>
+                    </FormItem>
+                    <FormItem className='items-center space-x-3'>
+                      <FormControl>
+                        <RadioGroupItem value={ActivityLevel.ModeratelyActive} />
+                      </FormControl>
+                      <FormLabel className='font-normal'>
+                        Moderamente Ativo - passa parte do dia caminhando ou fazendo alguma
+                        atividade
+                      </FormLabel>
+                    </FormItem>
+                    <FormItem className='items-center space-x-3'>
+                      <FormControl>
+                        <RadioGroupItem value={ActivityLevel.VeryActive} />
+                      </FormControl>
+                      <FormLabel className='font-normal'>
+                        Bastante ativo - faz trabalho braçal ou atividades físicas intensas
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button type='submit' variant='outline'>
             Continuar
           </Button>
