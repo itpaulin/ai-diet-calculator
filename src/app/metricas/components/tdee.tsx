@@ -22,6 +22,8 @@ import { ITdee } from '@/models'
 import { KatchMcArdle, MifflinStJeor } from '@/functions/tmb'
 import { Badge } from '@/components/ui/badge'
 import ActivityLevel from '@/enums/ActivityLevel'
+import WorkoutIntensity from '@/enums/WorkoutIntensity'
+import CardioIntensity from '@/enums/CardioIntensity'
 
 interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
@@ -29,18 +31,7 @@ interface TdeeProps {
 }
 
 const tdeeSchema = z.object({
-  gender: z.nativeEnum(Gender, {
-    errorMap: (issue, _ctx) => {
-      switch (issue.code) {
-        case 'invalid_type':
-          return { message: 'O sexo deve ser masculino ou feminino' }
-        case 'invalid_enum_value':
-          return { message: 'O sexo deve ser masculino ou feminino' }
-        default:
-          return { message: 'Sexo inválido' }
-      }
-    },
-  }),
+  gender: z.enum(['Male', 'Female']),
   age: z.coerce
     .number()
     .int({ message: 'Sua idade deve ser um numero inteiro' })
@@ -55,24 +46,19 @@ const tdeeSchema = z.object({
     .positive(),
   hasBF: z.coerce.boolean(),
   bodyFat: z.coerce.number().positive().optional(),
-  activityLevel: z.nativeEnum(ActivityLevel, {
-    errorMap: (issue, _ctx) => {
-      switch (issue.code) {
-        case 'invalid_type':
-          return { message: 'Selecione um nível de atividade adequado' }
-        case 'invalid_enum_value':
-          return { message: 'Selecione um nível de atividade adequado' }
-        default:
-          return { message: 'Nível inválido' }
-      }
-    },
-  }),
+  activityLevel: z.enum(['Sedentary', 'ModeratelyActive', 'VeryActive']),
+  weeklyWorkoutFrequency: z.coerce.number().int().positive(),
+  workoutTime: z.coerce.number().int().positive(),
+  intesityWorkout: z.enum(['Light', 'Moderate', 'Intense']),
+  weeklyCardioFrequency: z.coerce.number().int().positive(),
+  cardioTime: z.coerce.number().int().positive(),
+  intesityCardio: z.enum(['Light', 'Moderate', 'Intense']),
 })
 
 export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
   const [output, setOutput] = useState('')
-  const [hasBF, setHasBF] = useState<boolean>(false)
   const [bmr, setBmr] = useState<number | boolean>()
+  const [dailyCaloricBurn, setDailyCaloricBurn] = useState<number>()
   const form = useForm<z.infer<typeof tdeeSchema>>({
     resolver: zodResolver(tdeeSchema),
     defaultValues: {
@@ -81,9 +67,15 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
       height: undefined,
       weight: undefined,
       hasBF: undefined,
+      activityLevel: undefined,
+      weeklyWorkoutFrequency: undefined,
+      weeklyCardioFrequency: undefined,
+      intesityWorkout: undefined,
+      intesityCardio: undefined,
+      cardioTime: undefined,
     },
   })
-  const handleBmr = (values: any) => {
+  const handleBmr = (values: z.infer<typeof tdeeSchema>) => {
     if (values.hasBF === true) {
       if (values.bodyFat && values.bodyFat > 0) {
         setBmr(KatchMcArdle(values.weight, values.bodyFat))
@@ -91,6 +83,9 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
     } else {
       setBmr(MifflinStJeor(values))
     }
+  }
+  const handleDailyCaloricBurn = (values: z.infer<typeof tdeeSchema>) => {
+    return
   }
   const watchFields = form.watch(['gender', 'age', 'height', 'weight', 'hasBF', 'bodyFat'])
 
@@ -126,18 +121,16 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
                     className=''
                     {...field}
                   >
-                    <FormItem className='flex items-center space-x-1 space-y-0'>
-                      <FormControl>
-                        <RadioGroupItem value={Gender.Male} />
-                      </FormControl>
-                      <FormLabel className='font-normal'>Masculino</FormLabel>
-                    </FormItem>
-                    <FormItem className='flex items-center space-x-1 space-y-0'>
-                      <FormControl>
-                        <RadioGroupItem value={Gender.Female} />
-                      </FormControl>
-                      <FormLabel className='font-normal'>Feminino</FormLabel>
-                    </FormItem>
+                    {Object.keys(Gender).map((key) => (
+                      <FormItem className='flex items-center space-x-1 space-y-0'>
+                        <FormControl>
+                          <RadioGroupItem value={key} />
+                        </FormControl>
+                        <FormLabel className='font-normal'>
+                          {Gender[key as keyof typeof Gender]}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -261,38 +254,144 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
                     defaultValue={field.value}
                     className='flex flex-col'
                   >
-                    <FormItem className='items-center space-x-3'>
-                      <FormControl>
-                        <RadioGroupItem value={ActivityLevel.Sedentary} />
-                      </FormControl>
-                      <FormLabel className='font-normal'>
-                        Sedentário - passa o dia sentado / trabalho em escritório
-                      </FormLabel>
-                    </FormItem>
-                    <FormItem className='items-center space-x-3'>
-                      <FormControl>
-                        <RadioGroupItem value={ActivityLevel.ModeratelyActive} />
-                      </FormControl>
-                      <FormLabel className='font-normal'>
-                        Moderamente Ativo - passa parte do dia caminhando ou fazendo alguma
-                        atividade
-                      </FormLabel>
-                    </FormItem>
-                    <FormItem className='items-center space-x-3'>
-                      <FormControl>
-                        <RadioGroupItem value={ActivityLevel.VeryActive} />
-                      </FormControl>
-                      <FormLabel className='font-normal'>
-                        Bastante ativo - faz trabalho braçal ou atividades físicas intensas
-                      </FormLabel>
-                    </FormItem>
+                    {Object.keys(ActivityLevel).map((key) => (
+                      <FormItem className='items-center space-x-3'>
+                        <FormControl>
+                          <RadioGroupItem value={key} />
+                        </FormControl>
+                        <FormLabel className='font-normal'>
+                          {ActivityLevel[key as keyof typeof ActivityLevel]}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type='submit' variant='outline'>
+          <FormField
+            control={form.control}
+            name='weeklyWorkoutFrequency'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel> Quantas vezes você pratica musculação por semana? </FormLabel>
+                <FormControl>
+                  <Input type={'number'} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='workoutTime'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel> Quantas em média dura estes treinos? </FormLabel>
+                <FormControl>
+                  <Input type={'number'} placeholder='Em minutos' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='intesityWorkout'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel>Quão intenso são seus treinos de musculação?</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className='flex flex-col'
+                  >
+                    {Object.keys(WorkoutIntensity).map((key) => (
+                      <FormItem key={key} className='items-center space-x-3'>
+                        <FormControl>
+                          <RadioGroupItem value={key} />
+                        </FormControl>
+                        <FormLabel className='font-normal'>
+                          {WorkoutIntensity[key as keyof typeof WorkoutIntensity]}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='weeklyCardioFrequency'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel> Quantas vezes por semana você faz cardio? </FormLabel>
+                <FormControl>
+                  <Input type={'number'} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='cardioTime'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel> Quanto esses cardios costumam durar em média?</FormLabel>
+                <FormControl>
+                  <Input type={'number'} placeholder='Em minutos' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='intesityCardio'
+            render={({ field }) => (
+              <FormItem className='flex flex-col'>
+                <FormLabel>Quão intenso são suas sessões de cardio?</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className='flex flex-col'
+                  >
+                    {Object.keys(CardioIntensity).map((key) => (
+                      <FormItem key={key} className='items-center space-x-3'>
+                        <FormControl>
+                          <RadioGroupItem value={key} />
+                        </FormControl>
+                        <FormLabel className='font-normal'>
+                          {CardioIntensity[key as keyof typeof CardioIntensity]}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {dailyCaloricBurn && (
+            <div className='w-full rounded-lg bg-sky-100 text-center'>
+              <span className=' text-lg font-semibold'>
+                Sua taxa metabólica basal (TMB/BMR):
+                <Badge className='ml-2 bg-green-500 text-sm hover:bg-green-700'>
+                  {Number(dailyCaloricBurn).toFixed(0)}
+                </Badge>
+              </span>
+            </div>
+          )}
+
+          <Button type='submit' className='mt-6'>
             Continuar
           </Button>
         </form>
