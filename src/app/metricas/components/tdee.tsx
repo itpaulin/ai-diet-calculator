@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { FormProvider, set, useForm } from 'react-hook-form'
 import * as z from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -24,13 +24,14 @@ import { Badge } from '@/components/ui/badge'
 import ActivityLevel from '@/enums/ActivityLevel'
 import WorkoutIntensity from '@/enums/WorkoutIntensity'
 import CardioIntensity from '@/enums/CardioIntensity'
+import WeeklyCaloricExpenditure from '@/functions/activity-levels'
 
 interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
   setPayload: Dispatch<SetStateAction<ITdee | undefined>>
 }
 
-const tdeeSchema = z.object({
+export const tdeeSchema = z.object({
   gender: z.enum(['Male', 'Female']),
   age: z.coerce
     .number()
@@ -46,13 +47,13 @@ const tdeeSchema = z.object({
     .positive(),
   hasBF: z.coerce.boolean(),
   bodyFat: z.coerce.number().positive().optional(),
-  activityLevel: z.enum(['Sedentary', 'ModeratelyActive', 'VeryActive']),
-  weeklyWorkoutFrequency: z.coerce.number().int().positive(),
-  workoutTime: z.coerce.number().int().positive(),
-  intesityWorkout: z.enum(['Light', 'Moderate', 'Intense']),
-  weeklyCardioFrequency: z.coerce.number().int().positive(),
-  cardioTime: z.coerce.number().int().positive(),
-  intesityCardio: z.enum(['Light', 'Moderate', 'Intense']),
+  activityLevel: z.nativeEnum(ActivityLevel),
+  weeklyWorkoutFrequency: z.coerce.number().int().nonnegative(),
+  workoutTime: z.coerce.number().int().nonnegative(),
+  workoutIntensity: z.nativeEnum(WorkoutIntensity),
+  weeklyCardioFrequency: z.coerce.number().int().nonnegative(),
+  cardioTime: z.coerce.number().int().nonnegative(),
+  cardioIntensity: z.nativeEnum(CardioIntensity),
 })
 
 export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
@@ -70,8 +71,8 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
       activityLevel: undefined,
       weeklyWorkoutFrequency: undefined,
       weeklyCardioFrequency: undefined,
-      intesityWorkout: undefined,
-      intesityCardio: undefined,
+      workoutIntensity: undefined,
+      cardioIntensity: undefined,
       cardioTime: undefined,
     },
   })
@@ -85,17 +86,55 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
     }
   }
   const handleDailyCaloricBurn = (values: z.infer<typeof tdeeSchema>) => {
+    if (typeof bmr === 'number') {
+      const weeklyCaloricExpenditure = WeeklyCaloricExpenditure(bmr, values, values.weight)
+      setDailyCaloricBurn(weeklyCaloricExpenditure / 7)
+    }
     return
   }
-  const watchFields = form.watch(['gender', 'age', 'height', 'weight', 'hasBF', 'bodyFat'])
+  const watchFieldsBmr = form.watch(['gender', 'age', 'height', 'weight', 'hasBF', 'bodyFat'])
 
   useEffect(() => {
-    const [gender, age, height, weight, hasBF, bodyFat] = watchFields
+    const [gender, age, height, weight, hasBF, bodyFat] = watchFieldsBmr
     setBmr(false)
     if (gender && age && height && weight && hasBF !== undefined) {
       handleBmr(form.getValues())
     }
-  }, [watchFields, form.getValues('bodyFat')])
+  }, [watchFieldsBmr, form.getValues('bodyFat')])
+
+  const watchFieldsDailyCaloricBurn = form.watch([
+    'activityLevel',
+    'weeklyWorkoutFrequency',
+    'workoutTime',
+    'workoutIntensity',
+    'weeklyCardioFrequency',
+    'cardioTime',
+    'cardioIntensity',
+  ])
+
+  useEffect(() => {
+    const [
+      activityLevel,
+      weeklyWorkoutFrequency,
+      workoutTime,
+      workoutIntensity,
+      weeklyCardioFrequency,
+      cardioTime,
+      cardioIntensity,
+    ] = watchFieldsDailyCaloricBurn
+    if (
+      activityLevel &&
+      weeklyWorkoutFrequency &&
+      workoutTime &&
+      workoutIntensity &&
+      weeklyCardioFrequency &&
+      cardioTime &&
+      cardioIntensity
+    ) {
+      handleDailyCaloricBurn(form.getValues())
+    }
+  }, [watchFieldsDailyCaloricBurn])
+
   const onSubmit = (values: z.infer<typeof tdeeSchema>) => {
     setPayload(values)
     setHasTdee(true)
@@ -254,14 +293,12 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
                     defaultValue={field.value}
                     className='flex flex-col'
                   >
-                    {Object.keys(ActivityLevel).map((key) => (
-                      <FormItem className='items-center space-x-3'>
+                    {Object.values(ActivityLevel).map((value) => (
+                      <FormItem key={value} className='items-center space-x-3'>
                         <FormControl>
-                          <RadioGroupItem value={key} />
+                          <RadioGroupItem value={value} />
                         </FormControl>
-                        <FormLabel className='font-normal'>
-                          {ActivityLevel[key as keyof typeof ActivityLevel]}
-                        </FormLabel>
+                        <FormLabel className='font-normal'>{value}</FormLabel>
                       </FormItem>
                     ))}
                   </RadioGroup>
@@ -298,7 +335,7 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
           />
           <FormField
             control={form.control}
-            name='intesityWorkout'
+            name='workoutIntensity'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
                 <FormLabel>Quão intenso são seus treinos de musculação?</FormLabel>
@@ -308,14 +345,12 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
                     defaultValue={field.value}
                     className='flex flex-col'
                   >
-                    {Object.keys(WorkoutIntensity).map((key) => (
-                      <FormItem key={key} className='items-center space-x-3'>
+                    {Object.values(WorkoutIntensity).map((value) => (
+                      <FormItem key={value} className='items-center space-x-3'>
                         <FormControl>
-                          <RadioGroupItem value={key} />
+                          <RadioGroupItem value={value} />
                         </FormControl>
-                        <FormLabel className='font-normal'>
-                          {WorkoutIntensity[key as keyof typeof WorkoutIntensity]}
-                        </FormLabel>
+                        <FormLabel className='font-normal'>{value}</FormLabel>
                       </FormItem>
                     ))}
                   </RadioGroup>
@@ -353,7 +388,7 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
           />
           <FormField
             control={form.control}
-            name='intesityCardio'
+            name='cardioIntensity'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
                 <FormLabel>Quão intenso são suas sessões de cardio?</FormLabel>
@@ -363,14 +398,12 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
                     defaultValue={field.value}
                     className='flex flex-col'
                   >
-                    {Object.keys(CardioIntensity).map((key) => (
-                      <FormItem key={key} className='items-center space-x-3'>
+                    {Object.values(CardioIntensity).map((value) => (
+                      <FormItem key={value} className='items-center space-x-3'>
                         <FormControl>
-                          <RadioGroupItem value={key} />
+                          <RadioGroupItem value={value} />
                         </FormControl>
-                        <FormLabel className='font-normal'>
-                          {CardioIntensity[key as keyof typeof CardioIntensity]}
-                        </FormLabel>
+                        <FormLabel className='font-normal'>{value}</FormLabel>
                       </FormItem>
                     ))}
                   </RadioGroup>
