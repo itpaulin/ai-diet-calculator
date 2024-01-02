@@ -151,27 +151,29 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
             control={form.control}
             name='gender'
             render={({ field }) => (
-              <FormItem className='grid grid-cols-2'>
-                <FormLabel className='pt-7'>Sexo</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className=''
-                    {...field}
-                  >
-                    {Object.keys(Gender).map((key) => (
-                      <FormItem className='flex items-center space-x-1 space-y-0'>
-                        <FormControl>
-                          <RadioGroupItem value={key} />
-                        </FormControl>
-                        <FormLabel className='font-normal'>
-                          {Gender[key as keyof typeof Gender]}
-                        </FormLabel>
-                      </FormItem>
-                    ))}
-                  </RadioGroup>
-                </FormControl>
+              <FormItem>
+                <div className='grid grid-cols-2'>
+                  <FormLabel className='pt-7'>Sexo</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className=''
+                      {...field}
+                    >
+                      {Object.keys(Gender).map((key) => (
+                        <FormItem className='flex items-center space-x-1 space-y-0'>
+                          <FormControl>
+                            <RadioGroupItem value={key} />
+                          </FormControl>
+                          <FormLabel className='font-normal'>
+                            {Gender[key as keyof typeof Gender]}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
