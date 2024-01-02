@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useState } from 'react'
 import { Tdee } from './components/tdee'
 import { ITdee } from '@/models'
+import Objective from './components/objective'
 function Metricas() {
   const [tab, setTab] = useState<string>('tdee')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
@@ -44,6 +45,9 @@ function Metricas() {
           </TabsList>
           <TabsContent value='tdee'>
             <Tdee setHasTdee={setHasTdee} setPayload={setFormTdee} />
+          </TabsContent>
+          <TabsContent value='objective'>
+            <Objective />
           </TabsContent>
         </Tabs>
       </div>
