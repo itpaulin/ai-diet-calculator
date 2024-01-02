@@ -137,7 +137,6 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
 
   const onSubmit = (values: z.infer<typeof tdeeSchema>) => {
     setPayload(values)
-    setHasTdee(true)
     setOutput(JSON.stringify(values, null, 2))
   }
   return (
@@ -145,7 +144,7 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className=' grid grid-rows-2 items-center gap-4 pl-10 '
+          className=' grid grid-rows-2 items-center gap-4 p-5 '
         >
           <FormField
             control={form.control}
@@ -327,7 +326,7 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
             name='workoutTime'
             render={({ field }) => (
               <FormItem className='flex flex-col'>
-                <FormLabel> Quantas em média dura estes treinos? </FormLabel>
+                <FormLabel> Quanto em média dura estes treinos? </FormLabel>
                 <FormControl>
                   <Input type={'number'} placeholder='Em minutos' {...field} />
                 </FormControl>
@@ -415,23 +414,26 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
             )}
           />
 
-          {dailyCaloricBurn && (
-            <div className='w-full rounded-lg bg-sky-100 text-center'>
-              <span className=' text-lg font-semibold'>
-                Sua taxa metabólica basal (TMB/BMR):
-                <Badge className='ml-2 bg-green-500 text-sm hover:bg-green-700'>
-                  {Number(dailyCaloricBurn).toFixed(0)}
-                </Badge>
-              </span>
-            </div>
-          )}
-
           <Button type='submit' className='mt-6'>
-            Continuar
+            Calcular
           </Button>
         </form>
       </Form>
-      <pre>{output}</pre>
+      {dailyCaloricBurn && (
+        <div className='grid gap-2'>
+          <div className='  w-full  rounded-lg  pt-6 text-center'>
+            <span className=' bg-sky-100 text-lg font-semibold'>
+              Sua taxa metabólica basal (TMB/BMR):
+              <Badge className='ml-2 bg-green-500 text-sm hover:bg-green-700'>
+                {Number(dailyCaloricBurn).toFixed(0)}
+              </Badge>
+            </span>
+          </div>
+          <Button className='p-5' onClick={() => setHasTdee(true)}>
+            Próxima etapa
+          </Button>
+        </div>
+      )}
     </>
   )
 }
