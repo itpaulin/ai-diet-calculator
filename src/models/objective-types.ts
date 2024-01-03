@@ -9,7 +9,7 @@ export type TObjectiveOptions = {
   [K in TObjective]: string[]
 }
 
-export const objectiveOptions: TObjectiveOptions = {
+export const wayToActiveObjectiveOptions: TObjectiveOptions = {
   Cutting: [
     '220 a 250 gramas por semana (recomendado)',
     'Em torno de 500g por semana',
@@ -18,3 +18,21 @@ export const objectiveOptions: TObjectiveOptions = {
   Maintenance: ['Comer tanto quanto gasta'],
   Bulking: ['Superávit Limpo (5%)', 'Superávit Tradicional (10%)', 'Superávit Sujo (15%)'],
 }
+
+export const CardObjectiveOptions = [
+  {
+    value: 'Cutting',
+    label: 'Cutting (Perder peso / Definir)',
+    description: 'Gastar mais do come',
+  },
+  {
+    value: 'Maintenance',
+    label: 'Manutenção (Manter o peso atual)',
+    description: 'Gastar tanto quanto come',
+  },
+  {
+    value: 'Bulking',
+    label: 'Bulking (Ganhar peso / Hipertrofia)',
+    description: 'Comer mais do que gasta',
+  },
+]
