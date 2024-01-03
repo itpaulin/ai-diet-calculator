@@ -105,37 +105,15 @@ const Objective = () => {
               </FormControl>
             )}
           />
-          {/* <Card
-            className={`hover:bg-orange-300 hover:opacity-90 ${
-              objective === 'Maintenance' ? 'bg-primary text-black hover:bg-primary' : ''
-            }`}
-            onClick={() => handleObjective('Maintenance')}
-          >
-            <CardHeader className='text-center'>
-              <CardTitle>Manutenção (Manter o peso atual)</CardTitle>
-              <CardDescription className='text-black'>Gastar tanto quanto come</CardDescription>
-            </CardHeader>
-          </Card>
-          <Card
-            className={`hover:bg-orange-300 hover:opacity-90 ${
-              objective === 'Bulking' ? 'bg-primary text-black hover:bg-primary' : ''
-            }`}
-            onClick={() => handleObjective('Bulking')}
-          >
-            <CardHeader className='text-center'>
-              <CardTitle>Bulking (Ganhar peso / Hipertrofia)</CardTitle>
-              <CardDescription className='text-black'>Comer mais do que gasta</CardDescription>
-            </CardHeader>
-          </Card> */}
 
-          <div className='flex flex-row justify-center gap-6'>
+          <div className='gap-6'>
             {form.watch('objective') && options && (
               <FormField
                 control={form.control}
                 name='wayToDo'
                 render={({ field }) => (
                   <FormItem className='space-y-3'>
-                    <FormLabel className='font-semibold'>{label}</FormLabel>
+                    <FormLabel className=' font-semibold'>{label}</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
