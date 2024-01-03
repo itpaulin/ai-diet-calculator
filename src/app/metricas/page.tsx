@@ -3,7 +3,7 @@ import { NavegationButtons } from '@/components/ui/navegation-buttons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useEffect, useState } from 'react'
 import { Tdee } from './components/tdee'
-import { ITdee } from '@/models'
+import { ITdee } from '@/models/tdee-interface'
 import Objective from './components/objective'
 function Metricas() {
   const [tab, setTab] = useState<string>('tdee')
