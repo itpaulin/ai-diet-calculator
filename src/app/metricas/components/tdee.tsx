@@ -18,7 +18,7 @@ import Gender from '@/enums/Gender'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { ITdee } from '@/models'
+import { ITdee } from '@/models/tdee-interface'
 import { KatchMcArdle, MifflinStJeor } from '@/functions/tmb'
 import { Badge } from '@/components/ui/badge'
 import ActivityLevel from '@/enums/ActivityLevel'
@@ -161,7 +161,7 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
                       {...field}
                     >
                       {Object.keys(Gender).map((key) => (
-                        <FormItem className='flex items-center space-x-1 space-y-0'>
+                        <FormItem key={key} className='flex items-center space-x-1 space-y-0'>
                           <FormControl>
                             <RadioGroupItem value={key} />
                           </FormControl>
