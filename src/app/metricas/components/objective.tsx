@@ -106,7 +106,7 @@ const Objective = () => {
             )}
           />
 
-          <div className='gap-6'>
+          <div className='gap-6 pl-5'>
             {form.watch('objective') && options && (
               <FormField
                 control={form.control}
