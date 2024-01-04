@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react'
 import { Tdee } from './components/tdee'
 import { ITdee } from '@/models/tdee-interface'
 import Objective from './components/objective'
+import Macros from './components/macros'
 function Metricas() {
-  const [tab, setTab] = useState<string>('objective')
+  const [tab, setTab] = useState<string>('macros')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
@@ -16,16 +17,16 @@ function Metricas() {
   const onTabChange = (value: string) => {
     setTab(value)
   }
-  useEffect(() => {
-    if (hasTdee === true) {
-      onTabChange('objective')
-    }
-  }, [hasTdee])
-  useEffect(() => {
-    if (hasObjective === true) {
-      onTabChange('macros')
-    }
-  }, [hasObjective])
+  // useEffect(() => {
+  //   if (hasTdee === true) {
+  //     onTabChange('objective')
+  //   }
+  // }, [hasTdee])
+  // useEffect(() => {
+  //   if (hasObjective === true) {
+  //     onTabChange('macros')
+  //   }
+  // }, [hasObjective])
 
   return (
     <>
@@ -53,6 +54,9 @@ function Metricas() {
           </TabsContent>
           <TabsContent value='objective'>
             <Objective setHasObjective={setHasObjective} />
+          </TabsContent>
+          <TabsContent value='macros'>
+            <Macros />
           </TabsContent>
         </Tabs>
       </div>
