@@ -6,9 +6,9 @@ import { Tdee } from './components/tdee'
 import { ITdee } from '@/models/tdee-interface'
 import Objective from './components/objective'
 function Metricas() {
-  const [tab, setTab] = useState<string>('tdee')
+  const [tab, setTab] = useState<string>('objective')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
-  const [hasGoal, setHasGoal] = useState<boolean>(false)
+  const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
   const [hasDiet, setHasDiet] = useState<boolean>(false)
   const [formTdee, setFormTdee] = useState<ITdee>()
@@ -21,6 +21,11 @@ function Metricas() {
       onTabChange('objective')
     }
   }, [hasTdee])
+  useEffect(() => {
+    if (hasObjective === true) {
+      onTabChange('macros')
+    }
+  }, [hasObjective])
 
   return (
     <>
@@ -33,7 +38,7 @@ function Metricas() {
             <TabsTrigger value='objective' className='rounded-2xl' disabled={!hasTdee}>
               Objetivo
             </TabsTrigger>
-            <TabsTrigger value='macros' className='rounded-2xl' disabled={!hasGoal}>
+            <TabsTrigger value='macros' className='rounded-2xl' disabled={!hasObjective}>
               Macros
             </TabsTrigger>
             <TabsTrigger value='chat-gpt' className='rounded-2xl' disabled={!hasMacros}>
@@ -47,7 +52,7 @@ function Metricas() {
             <Tdee setHasTdee={setHasTdee} setPayload={setFormTdee} />
           </TabsContent>
           <TabsContent value='objective'>
-            <Objective />
+            <Objective setHasObjective={setHasObjective} />
           </TabsContent>
         </Tabs>
       </div>

@@ -1,6 +1,6 @@
 'use client'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   TObjective,
   wayToActiveObjectiveOptions,
@@ -20,6 +20,9 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Button } from '@/components/ui/button'
 
+interface ObjectiveProps {
+  setHasObjective: Dispatch<SetStateAction<boolean>>
+}
 const FormSchema = z
   .object({
     objective: z.enum(['Cutting', 'Maintenance', 'Bulking']),
@@ -36,7 +39,7 @@ const FormSchema = z
     },
   )
 
-const Objective = () => {
+const Objective = ({ setHasObjective }: ObjectiveProps) => {
   const [objective, setObjective] = useState<TObjective>()
   const [options, setOptions] = useState<string[]>()
   const [label, setLabel] = useState<string>()
@@ -63,7 +66,7 @@ const Objective = () => {
     form.setValue('wayToDo', '')
   }, [form.watch('objective')])
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log('caiu, data: ', data)
+    setHasObjective(true)
   }
   return (
     <div className=''>
