@@ -2,13 +2,25 @@ import { Form, FormControl, FormItem, FormLabel, FormMessage } from '@/component
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const FormSchema = z.object({})
+const FormSchemaCustom = z.object({
+  fat: z.coerce.number().positive(),
+  protein: z.coerce.number().positive(),
+  carbohydrate: z.coerce.number().positive(),
+})
 const Macros = () => {
-  const form = useForm()
-  const onSubmit = (values: z.infer<typeof FormSchema>) => {
+  const form = useForm({
+    resolver: zodResolver(FormSchemaCustom),
+    defaultValues: {
+      fat: 0,
+      protein: 0,
+      carbohydrate: 0,
+    },
+  })
+  const onSubmit = (values: z.infer<typeof FormSchemaCustom>) => {
     console.log(values)
   }
   return (
