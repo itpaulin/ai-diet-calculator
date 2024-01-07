@@ -15,10 +15,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const FormSchemaCustom = z.object({
-  fat: z.coerce.number().positive().max(100),
-  protein: z.coerce.number().positive().max(100),
-  carbohydrate: z.coerce.number().positive().max(100),
+const FormSchemaCustom = z
+  .object({
+    fat: z.coerce.number().positive().max(100),
+    protein: z.coerce.number().positive().max(100),
+    carbohydrate: z.coerce.number().positive().max(100),
+  })
+  .optional()
+const FormSchemaPreset = z.object({
+  protein: z.coerce.number().positive().max(2).min(1.6),
+  fat: z.coerce.number().positive().max(1).min(0.5),
 })
 const Macros = () => {
   const form = useForm({
@@ -29,7 +35,17 @@ const Macros = () => {
       carbohydrate: 0,
     },
   })
+  const formPreset = useForm({
+    resolver: zodResolver(FormSchemaPreset),
+    defaultValues: {
+      protein: '2',
+      fat: '1',
+    },
+  })
   const onSubmit = (values: z.infer<typeof FormSchemaCustom>) => {
+    console.log(values)
+  }
+  const onSubmitPreset = (values: z.infer<typeof FormSchemaPreset>) => {
     console.log(values)
   }
   return (
@@ -88,7 +104,101 @@ const Macros = () => {
                     </FormItem>
                   )}
                 />
-                <Button type='submit'>Submit</Button>
+                <Button type='submit'>Seguir</Button>
+              </div>
+            </form>
+          </Form>
+        </TabsContent>
+        <TabsContent value='preset'>
+          <Form {...formPreset}>
+            <form
+              onSubmit={formPreset.handleSubmit((values) =>
+                onSubmitPreset({ protein: Number(values.protein), fat: Number(values.fat) }),
+              )}
+            >
+              <FormField
+                control={formPreset.control}
+                name='protein'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col'>
+                    <FormLabel className='flex pr-10'>Proteína (4 calorias por grama)</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        defaultValue={field.value}
+                        className='flex flex-row space-y-1'
+                      >
+                        <FormItem className='flex items-center space-x-3 space-y-0'>
+                          <FormControl>
+                            <RadioGroupItem value='1.6' />
+                          </FormControl>
+                          <FormLabel className='text-base font-normal'>1.6 gramas por kg</FormLabel>
+                        </FormItem>
+                        <FormItem className='flex items-center space-x-3 space-y-0'>
+                          <FormControl>
+                            <RadioGroupItem value='1.8' />
+                          </FormControl>
+                          <FormLabel className='text-base font-normal'>1.8 gramas por kg</FormLabel>
+                        </FormItem>
+                        <FormItem className='flex items-center space-x-3 space-y-0'>
+                          <FormControl>
+                            <RadioGroupItem value='2' />
+                          </FormControl>
+                          <FormLabel className='text-base font-normal'>2 gramas por kg</FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formPreset.control}
+                name='fat'
+                render={({ field }) => (
+                  <FormItem className='flex flex-col'>
+                    <FormLabel className='flex pr-10'>Gordura (9 calorias por grama)</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className='flex flex-row space-y-1'
+                      >
+                        <FormItem className='flex items-center space-x-3 space-y-0'>
+                          <FormControl>
+                            <RadioGroupItem value='0.5' />
+                          </FormControl>
+                          <FormLabel className='text-base font-normal'>0.5 gramas por kg</FormLabel>
+                        </FormItem>
+                        <FormItem className='flex items-center space-x-3 space-y-0'>
+                          <FormControl>
+                            <RadioGroupItem value='0.7' />
+                          </FormControl>
+                          <FormLabel className='text-base font-normal'>0.7 gramas por kg</FormLabel>
+                        </FormItem>
+                        <FormItem className='flex items-center space-x-3 space-y-0'>
+                          <FormControl>
+                            <RadioGroupItem value='1' />
+                          </FormControl>
+                          <FormLabel className='text-base font-normal'>1 gramas por kg</FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className='pt-4 text-start'>
+                <FormLabel>Carboidrato (4 calorias por grama)</FormLabel>
+                <p>
+                  A quantidade de carboidratos é calculado com o restante das suas calorias
+                  subtraindo proteínas e gorduras.
+                </p>
+              </div>
+              <div className='p-4'>
+                <Button type='submit' className='w-[332px] p-4'>
+                  Seguir
+                </Button>
               </div>
             </form>
           </Form>
