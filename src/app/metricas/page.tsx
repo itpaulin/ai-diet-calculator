@@ -17,16 +17,16 @@ function Metricas() {
   const onTabChange = (value: string) => {
     setTab(value)
   }
-  // useEffect(() => {
-  //   if (hasTdee === true) {
-  //     onTabChange('objective')
-  //   }
-  // }, [hasTdee])
-  // useEffect(() => {
-  //   if (hasObjective === true) {
-  //     onTabChange('macros')
-  //   }
-  // }, [hasObjective])
+  // alternar em apenas um ueh usando um form state...
+  useEffect(() => {
+    if (hasTdee === true) onTabChange('objective')
+  }, [hasTdee])
+  useEffect(() => {
+    if (hasObjective === true) onTabChange('macros')
+  }, [hasObjective])
+  useEffect(() => {
+    if (hasMacros === true) onTabChange('chat-gpt')
+  }, [hasMacros])
 
   return (
     <>
@@ -56,7 +56,7 @@ function Metricas() {
             <Objective setHasObjective={setHasObjective} />
           </TabsContent>
           <TabsContent value='macros'>
-            <Macros />
+            <Macros setHasMacros={setHasMacros} />
           </TabsContent>
         </Tabs>
       </div>

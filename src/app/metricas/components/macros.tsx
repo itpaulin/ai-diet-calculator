@@ -12,9 +12,12 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Dispatch, SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-
+interface MacrosProps {
+  setHasMacros: Dispatch<SetStateAction<boolean>>
+}
 const FormSchemaCustom = z
   .object({
     fat: z.coerce.number().positive().max(100),
@@ -26,7 +29,7 @@ const FormSchemaPreset = z.object({
   protein: z.coerce.number().positive().max(2).min(1.6),
   fat: z.coerce.number().positive().max(1).min(0.5),
 })
-const Macros = () => {
+const Macros = ({ setHasMacros }: MacrosProps) => {
   const form = useForm({
     resolver: zodResolver(FormSchemaCustom),
     defaultValues: {
@@ -44,9 +47,11 @@ const Macros = () => {
   })
   const onSubmit = (values: z.infer<typeof FormSchemaCustom>) => {
     console.log(values)
+    setHasMacros(true)
   }
   const onSubmitPreset = (values: z.infer<typeof FormSchemaPreset>) => {
     console.log(values)
+    setHasMacros(true)
   }
   return (
     <div>
