@@ -8,7 +8,7 @@ import Objective from './components/objective'
 import Macros from './components/macros'
 import Meals from './components/meals'
 function Metricas() {
-  const [tab, setTab] = useState<string>('macros')
+  const [tab, setTab] = useState<string>('meals')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
@@ -31,9 +31,9 @@ function Metricas() {
 
   return (
     <>
-      <div className='px-10 py-10'>
-        <Tabs value={tab} onValueChange={onTabChange} className='w-[25rem]'>
-          <TabsList className='grid w-full grid-cols-5'>
+      <div className='flex justify-center p-10'>
+        <Tabs value={tab} onValueChange={onTabChange} className='w-[26rem]'>
+          <TabsList className='grid w-full grid-cols-6'>
             <TabsTrigger value='tdee' className='rounded-2xl'>
               TDEE
             </TabsTrigger>
