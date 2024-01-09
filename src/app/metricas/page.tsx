@@ -6,6 +6,7 @@ import { Tdee } from './components/tdee'
 import { ITdee } from '@/models/tdee-interface'
 import Objective from './components/objective'
 import Macros from './components/macros'
+import Meals from './components/meals'
 function Metricas() {
   const [tab, setTab] = useState<string>('macros')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
@@ -42,6 +43,9 @@ function Metricas() {
             <TabsTrigger value='macros' className='rounded-2xl' disabled={!hasObjective}>
               Macros
             </TabsTrigger>
+            <TabsTrigger value='meals' className='rounded-2xl' disabled={!hasMacros}>
+              Refeições
+            </TabsTrigger>
             <TabsTrigger value='chat-gpt' className='rounded-2xl' disabled={!hasMacros}>
               IA
             </TabsTrigger>
@@ -57,6 +61,9 @@ function Metricas() {
           </TabsContent>
           <TabsContent value='macros'>
             <Macros setHasMacros={setHasMacros} />
+          </TabsContent>
+          <TabsContent value='meals'>
+            <Meals />
           </TabsContent>
         </Tabs>
       </div>
