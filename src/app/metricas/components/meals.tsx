@@ -11,7 +11,26 @@ const Meals = () => {
     <>
       <div className='flex flex-col items-center justify-center'>
         <span className='text-xl font-semibold'>Seus Macros Nutrientes Diários:</span>
-        <span>Carboidratos: 100g | Proteínas: 250g | Gordura: 75g </span>
+        <table className='my-5 bg-slate-50'>
+          <thead>
+            <tr>
+              <th className='bg-slate-100'></th>
+              <th className='border px-2 font-normal'>Carboidratos</th>
+              <th className='border px-2 font-normal'>Proteínas</th>
+              <th className='border px-2 font-normal'>Gorduras</th>
+              <th className='border px-2 font-normal'>Calorias</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className='border text-center'>Gramas por dia</td>
+              <td className='border text-center'>300g</td>
+              <td className='border text-center'>145g</td>
+              <td className='border text-center'>74g</td>
+              <td className='border text-center'>3000</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <span className='flex justify-center text-xl font-semibold'>
         Escolha como dividí-los durante o seu dia
@@ -32,7 +51,7 @@ const Meals = () => {
         </div>
       </div>
       <div className='flex items-center justify-center pt-6'>
-        <table className='border'>
+        <table className='border bg-slate-50'>
           <thead className='border'>
             <tr>
               <th className='p-5 text-xl'>100 Calorias por refeição</th>
