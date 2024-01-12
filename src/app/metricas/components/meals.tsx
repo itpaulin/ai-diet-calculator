@@ -7,7 +7,7 @@ interface MealsProps {
 }
 const Meals = ({ macros: { protein, fat, carbohydrate }, tmb }: MealsProps) => {
   const [mealPerDay, setMealPerDay] = useState<number[]>([2, 3, 4, 5, 6])
-  const [quantity, setQuantity] = useState<number>(3)
+  const [quantity, setQuantity] = useState<number>(4)
   const handleQuantity = (value: number) => {
     setQuantity(value)
   }
