@@ -4,7 +4,7 @@ import CardioIntensity from '@/enums/CardioIntensity'
 import WorkoutIntensity from '@/enums/WorkoutIntensity'
 import { z } from 'zod'
 
-type TtdeeSchema = z.infer<typeof tdeeSchema>
+type TdeeSchema = z.infer<typeof tdeeSchema>
 
 function NonExerciseActivityThermogenesis(intensidade: string): number {
   switch (intensidade) {
@@ -62,7 +62,7 @@ function CardioCaloryExpenditure(
 }
 
 type TCaloricActivity = Pick<
-  TtdeeSchema,
+  TdeeSchema,
   | 'cardioIntensity'
   | 'cardioTime'
   | 'weeklyCardioFrequency'
