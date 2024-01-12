@@ -25,10 +25,12 @@ import ActivityLevel from '@/enums/ActivityLevel'
 import WorkoutIntensity from '@/enums/WorkoutIntensity'
 import CardioIntensity from '@/enums/CardioIntensity'
 import WeeklyCaloricExpenditure from '@/functions/activity-levels'
+import PersonalInformation from '@/models/personal-informations'
 
 interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
   setPayload: Dispatch<SetStateAction<number>>
+  setUtils: Dispatch<SetStateAction<PersonalInformation>>
 }
 
 export const tdeeSchema = z.object({
@@ -56,7 +58,7 @@ export const tdeeSchema = z.object({
   cardioIntensity: z.nativeEnum(CardioIntensity),
 })
 
-export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
+export const Tdee = ({ setHasTdee, setPayload, setUtils }: TdeeProps) => {
   const [output, setOutput] = useState('')
   const [bmr, setBmr] = useState<number | boolean>()
   const [dailyCaloricBurn, setDailyCaloricBurn] = useState<number>()
@@ -139,6 +141,7 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
     setPayload(~~dailyCaloricBurn!)
     setOutput(JSON.stringify(values, null, 2))
     setHasTdee(true)
+    setUtils({ weight: values.weight })
   }
   return (
     <>

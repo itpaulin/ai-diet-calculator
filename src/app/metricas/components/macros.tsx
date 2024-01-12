@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 interface MacrosProps {
   setHasMacros: Dispatch<SetStateAction<boolean>>
+  weight: number
 }
 const FormSchemaCustom = z
   .object({
@@ -29,7 +30,7 @@ const FormSchemaPreset = z.object({
   protein: z.coerce.number().positive().max(2).min(1.6),
   fat: z.coerce.number().positive().max(1).min(0.5),
 })
-const Macros = ({ setHasMacros }: MacrosProps) => {
+const Macros = ({ setHasMacros, weight }: MacrosProps) => {
   const form = useForm({
     resolver: zodResolver(FormSchemaCustom),
     defaultValues: {
@@ -45,12 +46,11 @@ const Macros = ({ setHasMacros }: MacrosProps) => {
       fat: '1',
     },
   })
-  const onSubmit = (values: z.infer<typeof FormSchemaCustom>) => {
+  const onSubmitCustom = (values: z.infer<typeof FormSchemaCustom>) => {
     console.log(values)
     setHasMacros(true)
   }
   const onSubmitPreset = (values: z.infer<typeof FormSchemaPreset>) => {
-    console.log(values)
     setHasMacros(true)
   }
   return (
@@ -63,7 +63,7 @@ const Macros = ({ setHasMacros }: MacrosProps) => {
         <TabsContent value='custom'>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit(onSubmitCustom)}
               className='flex flex-col items-center justify-center text-center'
             >
               <Label className='p-5 text-lg font-semibold'>

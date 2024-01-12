@@ -7,14 +7,18 @@ import { ITdee } from '@/models/tdee-interface'
 import Objective from './components/objective'
 import Macros from './components/macros'
 import Meals from './components/meals'
+import PersonalInformation from '@/models/personal-informations'
 function Metricas() {
-  const [tab, setTab] = useState<string>('objective')
+  const [tab, setTab] = useState<string>('macros')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
   const [hasMeals, setHasMeals] = useState<boolean>(false)
   const [hasDiet, setHasDiet] = useState<boolean>(false)
-  const [tmb, setTmb] = useState<number>(0)
+  const [tmb, setTmb] = useState<number>(2000)
+  const [personalInformations, setPersonalInformations] = useState<PersonalInformation>({
+    weight: 0,
+  })
 
   const onTabChange = (value: string) => {
     setTab(value)
@@ -58,13 +62,13 @@ function Metricas() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value='tdee'>
-            <Tdee setHasTdee={setHasTdee} setPayload={setTmb} />
+            <Tdee setHasTdee={setHasTdee} setPayload={setTmb} setUtils={setPersonalInformations} />
           </TabsContent>
           <TabsContent value='objective'>
             <Objective setTmb={setTmb} setHasObjective={setHasObjective} />
           </TabsContent>
           <TabsContent value='macros'>
-            <Macros setHasMacros={setHasMacros} />
+            <Macros setHasMacros={setHasMacros} weight={personalInformations.weight} />
           </TabsContent>
           <TabsContent value='meals'>
             <Meals />
