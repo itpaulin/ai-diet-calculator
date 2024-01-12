@@ -34,7 +34,7 @@ function Metricas() {
     if (hasObjective === true) onTabChange('macros')
   }, [hasObjective])
   useEffect(() => {
-    if (hasMacros === true) onTabChange('chat-gpt')
+    if (hasMacros === true) onTabChange('meals')
   }, [hasMacros])
 
   return (
