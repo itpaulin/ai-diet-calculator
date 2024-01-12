@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Macros } from '@/models/macros'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Dispatch, SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
@@ -18,6 +19,8 @@ import { z } from 'zod'
 interface MacrosProps {
   setHasMacros: Dispatch<SetStateAction<boolean>>
   weight: number
+  tmb: number
+  setMacrosGrams: Dispatch<SetStateAction<Macros>>
 }
 const FormSchemaCustom = z
   .object({
@@ -30,7 +33,7 @@ const FormSchemaPreset = z.object({
   protein: z.coerce.number().positive().max(2).min(1.6),
   fat: z.coerce.number().positive().max(1).min(0.5),
 })
-const Macros = ({ setHasMacros, weight }: MacrosProps) => {
+const Macros = ({ setHasMacros, weight, tmb, setMacrosGrams }: MacrosProps) => {
   const form = useForm({
     resolver: zodResolver(FormSchemaCustom),
     defaultValues: {
@@ -47,10 +50,22 @@ const Macros = ({ setHasMacros, weight }: MacrosProps) => {
     },
   })
   const onSubmitCustom = (values: z.infer<typeof FormSchemaCustom>) => {
-    console.log(values)
+    if (values) {
+      const protein = ((values.protein / 100) * tmb) / 4
+      const fat = ((values.fat / 100) * tmb) / 9
+      const carbohydrate = ((values.carbohydrate / 100) * tmb) / 4
+      // using ~~ operator
+      setMacrosGrams({ protein: ~~protein, fat: ~~fat, carbohydrate: ~~carbohydrate })
+    }
     setHasMacros(true)
   }
   const onSubmitPreset = (values: z.infer<typeof FormSchemaPreset>) => {
+    const protein = Math.round(weight * values.protein)
+    const fat = Math.round(weight * values.fat)
+    const remainingCalorie = fat * 9 + protein * 4
+    const carbohydrate = Math.round((tmb - remainingCalorie) / 4)
+    // usingo math round
+    setMacrosGrams({ protein: protein, fat: fat, carbohydrate: carbohydrate })
     setHasMacros(true)
   }
   return (
@@ -77,7 +92,7 @@ const Macros = ({ setHasMacros, weight }: MacrosProps) => {
                     <FormItem className='grid grid-cols-2'>
                       <FormLabel className='pt-3'>Proteínas</FormLabel>
                       <FormControl>
-                        <Input type='number' placeholder='%' {...field} />
+                        <Input type='number' placeholder='%' {...field} required />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
