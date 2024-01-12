@@ -8,12 +8,13 @@ import Objective from './components/objective'
 import Macros from './components/macros'
 import Meals from './components/meals'
 function Metricas() {
-  const [tab, setTab] = useState<string>('meals')
+  const [tab, setTab] = useState<string>('macros')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
+  const [hasMeals, setHasMeals] = useState<boolean>(false)
   const [hasDiet, setHasDiet] = useState<boolean>(false)
-  const [formTdee, setFormTdee] = useState<ITdee>()
+  const [tmb, setTmb] = useState<number>()
 
   const onTabChange = (value: string) => {
     setTab(value)
@@ -29,6 +30,9 @@ function Metricas() {
     if (hasMacros === true) onTabChange('chat-gpt')
   }, [hasMacros])
 
+  useEffect(() => {
+    console.log(tmb)
+  }, [tmb])
   return (
     <>
       <div className='flex justify-center p-10'>
@@ -54,7 +58,7 @@ function Metricas() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value='tdee'>
-            <Tdee setHasTdee={setHasTdee} setPayload={setFormTdee} />
+            <Tdee setHasTdee={setHasTdee} setPayload={setTmb} />
           </TabsContent>
           <TabsContent value='objective'>
             <Objective setHasObjective={setHasObjective} />

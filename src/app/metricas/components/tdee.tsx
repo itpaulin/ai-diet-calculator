@@ -28,7 +28,7 @@ import WeeklyCaloricExpenditure from '@/functions/activity-levels'
 
 interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
-  setPayload: Dispatch<SetStateAction<ITdee | undefined>>
+  setPayload: Dispatch<SetStateAction<number | undefined>>
 }
 
 export const tdeeSchema = z.object({
@@ -136,8 +136,9 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
   }, [watchFieldsDailyCaloricBurn])
 
   const onSubmit = (values: z.infer<typeof tdeeSchema>) => {
-    setPayload(values)
+    setPayload(~~dailyCaloricBurn!)
     setOutput(JSON.stringify(values, null, 2))
+    setHasTdee(true)
   }
   return (
     <>
@@ -413,27 +414,21 @@ export const Tdee = ({ setHasTdee, setPayload }: TdeeProps) => {
               </FormItem>
             )}
           />
-
-          <Button type='submit' className='mt-6'>
-            Calcular
+          {dailyCaloricBurn && (
+            <div className='  mt-6  w-full rounded-lg  bg-sky-100 text-center'>
+              <span className='text-lg font-semibold'>
+                Seu gasto calórico diário:
+                <Badge className='ml-2 bg-green-500 text-sm hover:bg-green-700'>
+                  {Number(dailyCaloricBurn).toFixed(0)}
+                </Badge>
+              </span>
+            </div>
+          )}
+          <Button className='p-5' type='submit'>
+            Próxima etapa
           </Button>
         </form>
       </Form>
-      {dailyCaloricBurn && (
-        <div className='grid gap-2'>
-          <div className='  w-full  rounded-lg  pt-6 text-center'>
-            <span className=' bg-sky-100 text-lg font-semibold'>
-              Sua taxa metabólica basal (TMB/BMR):
-              <Badge className='ml-2 bg-green-500 text-sm hover:bg-green-700'>
-                {Number(dailyCaloricBurn).toFixed(0)}
-              </Badge>
-            </span>
-          </div>
-          <Button className='p-5' onClick={() => setHasTdee(true)}>
-            Próxima etapa
-          </Button>
-        </div>
-      )}
     </>
   )
 }
