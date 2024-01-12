@@ -8,13 +8,13 @@ import Objective from './components/objective'
 import Macros from './components/macros'
 import Meals from './components/meals'
 function Metricas() {
-  const [tab, setTab] = useState<string>('macros')
+  const [tab, setTab] = useState<string>('objective')
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
   const [hasMeals, setHasMeals] = useState<boolean>(false)
   const [hasDiet, setHasDiet] = useState<boolean>(false)
-  const [tmb, setTmb] = useState<number>()
+  const [tmb, setTmb] = useState<number>(0)
 
   const onTabChange = (value: string) => {
     setTab(value)
@@ -61,7 +61,7 @@ function Metricas() {
             <Tdee setHasTdee={setHasTdee} setPayload={setTmb} />
           </TabsContent>
           <TabsContent value='objective'>
-            <Objective setHasObjective={setHasObjective} />
+            <Objective setTmb={setTmb} setHasObjective={setHasObjective} />
           </TabsContent>
           <TabsContent value='macros'>
             <Macros setHasMacros={setHasMacros} />
@@ -71,7 +71,6 @@ function Metricas() {
           </TabsContent>
         </Tabs>
       </div>
-      {/* <NavegationButtons Back={() => console.log('oi')} Next={() => console.log('oi')} /> */}
     </>
   )
 }

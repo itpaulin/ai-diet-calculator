@@ -22,6 +22,7 @@ import { Button } from '@/components/ui/button'
 
 interface ObjectiveProps {
   setHasObjective: Dispatch<SetStateAction<boolean>>
+  setTmb: Dispatch<SetStateAction<number>>
 }
 const FormSchema = z
   .object({
@@ -39,7 +40,7 @@ const FormSchema = z
     },
   )
 
-const Objective = ({ setHasObjective }: ObjectiveProps) => {
+const Objective = ({ setHasObjective, setTmb }: ObjectiveProps) => {
   const [objective, setObjective] = useState<TObjective>()
   const [options, setOptions] = useState<string[]>()
   const [label, setLabel] = useState<string>()
@@ -66,6 +67,36 @@ const Objective = ({ setHasObjective }: ObjectiveProps) => {
     form.setValue('wayToDo', '')
   }, [form.watch('objective')])
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    switch (data.objective) {
+      case 'Cutting':
+        switch (data.wayToDo) {
+          case wayToActiveObjectiveOptions.Cutting[0]:
+            setTmb((prev) => prev - 250)
+            break
+          case wayToActiveObjectiveOptions.Cutting[1]:
+            setTmb((prev) => prev - 500)
+            break
+          case wayToActiveObjectiveOptions.Cutting[2]:
+            setTmb((prev) => prev - 750)
+            break
+        }
+        break
+      case 'Maintenance':
+        break
+      case 'Bulking':
+        switch (data.wayToDo) {
+          case wayToActiveObjectiveOptions.Bulking[0]:
+            setTmb((prev) => prev * 1.05)
+            break
+          case wayToActiveObjectiveOptions.Bulking[1]:
+            setTmb((prev) => prev + 1.1)
+            break
+          case wayToActiveObjectiveOptions.Bulking[2]:
+            setTmb((prev) => prev + 1.15)
+            break
+        }
+        break
+    }
     setHasObjective(true)
   }
   return (
