@@ -28,7 +28,7 @@ import WeeklyCaloricExpenditure from '@/functions/activity-levels'
 
 interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
-  setPayload: Dispatch<SetStateAction<number | undefined>>
+  setPayload: Dispatch<SetStateAction<number>>
 }
 
 export const tdeeSchema = z.object({
