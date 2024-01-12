@@ -17,9 +17,9 @@ function Metricas() {
   const [hasMeals, setHasMeals] = useState<boolean>(false)
   const [hasDiet, setHasDiet] = useState<boolean>(false)
 
-  const [tmb, setTmb] = useState<number>(0)
+  const [tmb, setTmb] = useState<number>(2000)
   const [personalInformations, setPersonalInformations] = useState<PersonalInformation>({
-    weight: 0,
+    weight: 70,
   })
   const [macrosGrams, setMacrosGrams] = useState<IMacros>({ protein: 0, fat: 0, carbohydrate: 0 })
 
@@ -76,7 +76,7 @@ function Metricas() {
             />
           </TabsContent>
           <TabsContent value='meals'>
-            <Meals />
+            <Meals macros={macrosGrams} tmb={tmb} />
           </TabsContent>
         </Tabs>
       </div>

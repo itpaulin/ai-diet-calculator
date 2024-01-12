@@ -1,11 +1,21 @@
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-
-const Meals = () => {
+import { Macros } from '@/models/macros'
+interface MealsProps {
+  macros: Macros
+  tmb: number
+}
+const Meals = ({ macros: { protein, fat, carbohydrate }, tmb }: MealsProps) => {
   const [mealPerDay, setMealPerDay] = useState<number[]>([2, 3, 4, 5, 6])
   const [quantity, setQuantity] = useState<number>(3)
   const handleQuantity = (value: number) => {
     setQuantity(value)
+  }
+  const handlePercentageMacroGramsForCalories = (
+    value: number,
+    equivalentCalories: number,
+  ): string => {
+    return Math.round((((value / quantity) * equivalentCalories) / (tmb / quantity)) * 100) + ' %'
   }
   return (
     <>
@@ -24,10 +34,10 @@ const Meals = () => {
           <tbody>
             <tr>
               <td className='border text-center'>Gramas por dia</td>
-              <td className='border text-center'>300g</td>
-              <td className='border text-center'>145g</td>
-              <td className='border text-center'>74g</td>
-              <td className='border text-center'>3000</td>
+              <td className='border text-center'>{carbohydrate}g</td>
+              <td className='border text-center'>{protein}g</td>
+              <td className='border text-center'>{fat}g</td>
+              <td className='border text-center'>{tmb}</td>
             </tr>
           </tbody>
         </table>
@@ -54,7 +64,7 @@ const Meals = () => {
         <table className='border bg-slate-50'>
           <thead className='border'>
             <tr>
-              <th className='p-5 text-xl'>100 Calorias por refeição</th>
+              <th className='p-5 text-xl'>{(tmb / quantity).toFixed(0)} Calorias por refeição</th>
             </tr>
           </thead>
           <tbody className='flex'>
@@ -64,14 +74,16 @@ const Meals = () => {
               <td className='border'>Gorduras</td>
             </tr>
             <tr className='flex flex-col '>
-              <td className='border pr-16'>10g</td>
-              <td className='border'>25g</td>
-              <td className='border'>7.5g</td>
+              <td className='border px-6'>{(carbohydrate / quantity).toFixed(0)} gramas</td>
+              <td className='border px-6'>{(protein / quantity).toFixed(0)} gramas</td>
+              <td className='border px-6'>{(fat / quantity).toFixed(0)} gramas</td>
             </tr>
             <tr className='flex flex-col'>
-              <td className='border pr-16'>50%</td>
-              <td className='border'>10%</td>
-              <td className='border'>40%</td>
+              <td className='border pr-16'>
+                {handlePercentageMacroGramsForCalories(carbohydrate, 4)}
+              </td>
+              <td className='border'>{handlePercentageMacroGramsForCalories(protein, 4)}</td>
+              <td className='border'>{handlePercentageMacroGramsForCalories(fat, 9)}</td>
             </tr>
           </tbody>
         </table>
