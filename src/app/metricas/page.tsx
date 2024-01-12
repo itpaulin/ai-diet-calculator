@@ -36,6 +36,9 @@ function Metricas() {
   useEffect(() => {
     if (hasMacros === true) onTabChange('meals')
   }, [hasMacros])
+  useEffect(() => {
+    if (hasMeals === true) onTabChange('chat-gpt')
+  }, [hasMeals])
 
   return (
     <>
@@ -76,7 +79,7 @@ function Metricas() {
             />
           </TabsContent>
           <TabsContent value='meals'>
-            <Meals macros={macrosGrams} tmb={tmb} />
+            <Meals macros={macrosGrams} tmb={tmb} setHasMeals={setHasMeals} />
           </TabsContent>
         </Tabs>
       </div>

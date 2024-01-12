@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { Macros } from '@/models/macros'
 interface MealsProps {
   macros: Macros
   tmb: number
+  setHasMeals: Dispatch<SetStateAction<boolean>>
 }
-const Meals = ({ macros: { protein, fat, carbohydrate }, tmb }: MealsProps) => {
+const Meals = ({ macros: { protein, fat, carbohydrate }, tmb, setHasMeals }: MealsProps) => {
   const [mealPerDay, setMealPerDay] = useState<number[]>([2, 3, 4, 5, 6])
   const [quantity, setQuantity] = useState<number>(4)
   const handleQuantity = (value: number) => {
@@ -87,6 +88,11 @@ const Meals = ({ macros: { protein, fat, carbohydrate }, tmb }: MealsProps) => {
             </tr>
           </tbody>
         </table>
+      </div>
+      <div className='flex justify-center p-4'>
+        <Button onClick={() => setHasMeals(true)} className='w-[332px] p-4'>
+          Seguir
+        </Button>
       </div>
     </>
   )
