@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const FormSchema = z.object({
   changeMessage: z
@@ -23,6 +23,9 @@ const AiResults = () => {
     resolver: zodResolver(FormSchema),
   })
 
+  useEffect(() => {
+    //handle inicial com dados
+  }, [])
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     //handle to OpenAI API
     setChanged(true)
