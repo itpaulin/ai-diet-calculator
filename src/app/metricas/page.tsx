@@ -9,8 +9,10 @@ import Macros from './components/macros'
 import Meals from './components/meals'
 import PersonalInformation from '@/models/personal-informations'
 import { Macros as IMacros } from '@/models/macros'
+import AiResults from './components/ai-results'
 function Metricas() {
   const [tab, setTab] = useState<string>('macros')
+
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
@@ -26,20 +28,9 @@ function Metricas() {
   const onTabChange = (value: string) => {
     setTab(value)
   }
-  // alternar em apenas um ueh usando um form state...
-  useEffect(() => {
-    if (hasTdee === true) onTabChange('objective')
-  }, [hasTdee])
-  useEffect(() => {
-    if (hasObjective === true) onTabChange('macros')
-  }, [hasObjective])
-  useEffect(() => {
-    if (hasMacros === true) onTabChange('meals')
-  }, [hasMacros])
-  useEffect(() => {
-    if (hasMeals === true) onTabChange('chat-gpt')
-  }, [hasMeals])
 
+  console.log('🚀 ~ Metricas ~ tmb:', tmb)
+  console.log('🚀 ~ Metricas ~ macrosGrams:', macrosGrams)
   return (
     <>
       <div className='flex justify-center p-10'>
@@ -65,21 +56,30 @@ function Metricas() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value='tdee'>
-            <Tdee setHasTdee={setHasTdee} setPayload={setTmb} setUtils={setPersonalInformations} />
+            <Tdee
+              setTab={setTab}
+              setHasTdee={setHasTdee}
+              setPayload={setTmb}
+              setUtils={setPersonalInformations}
+            />
           </TabsContent>
           <TabsContent value='objective'>
-            <Objective setTmb={setTmb} setHasObjective={setHasObjective} />
+            <Objective setTmb={setTmb} setTab={setTab} setHasObjective={setHasObjective} />
           </TabsContent>
           <TabsContent value='macros'>
             <Macros
               tmb={tmb}
               setHasMacros={setHasMacros}
+              setTab={setTab}
               weight={personalInformations.weight}
               setMacrosGrams={setMacrosGrams}
             />
           </TabsContent>
           <TabsContent value='meals'>
-            <Meals macros={macrosGrams} tmb={tmb} setHasMeals={setHasMeals} />
+            <Meals macros={macrosGrams} tmb={tmb} setTab={setTab} setHasMeals={setHasMeals} />
+          </TabsContent>
+          <TabsContent value='chat-gpt'>
+            <AiResults />
           </TabsContent>
         </Tabs>
       </div>
