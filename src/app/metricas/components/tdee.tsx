@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import Gender from '@/enums/Gender'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { ITdee } from '@/models/tdee-interface'
 import { KatchMcArdle, MifflinStJeor } from '@/functions/tmb'
 import { Badge } from '@/components/ui/badge'
@@ -65,19 +65,6 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
   const [dailyCaloricBurn, setDailyCaloricBurn] = useState<number>()
   const form = useForm<z.infer<typeof tdeeSchema>>({
     resolver: zodResolver(tdeeSchema),
-    defaultValues: {
-      age: undefined,
-      bodyFat: undefined,
-      height: undefined,
-      weight: undefined,
-      hasBF: undefined,
-      activityLevel: undefined,
-      weeklyWorkoutFrequency: undefined,
-      weeklyCardioFrequency: undefined,
-      workoutIntensity: undefined,
-      cardioIntensity: undefined,
-      cardioTime: undefined,
-    },
   })
   const handleBmr = (values: z.infer<typeof tdeeSchema>) => {
     if (values.hasBF === true) {
@@ -144,7 +131,15 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
     setHasTdee(true)
     setUtils({ weight: values.weight })
     setTab('objective')
+    localStorage.setItem('FORM_DATA', JSON.stringify(values))
   }
+  useEffect(() => {
+    const data = localStorage.getItem('FORM_DATA')
+    if (data) {
+      const parsedData = JSON.parse(data)
+      form.reset(parsedData)
+    }
+  }, [])
   return (
     <>
       <Form {...form}>
