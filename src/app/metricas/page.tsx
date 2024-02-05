@@ -51,7 +51,7 @@ function Metricas() {
             <TabsTrigger value='meals' className='rounded-2xl' disabled={!hasMacros}>
               Refeições
             </TabsTrigger>
-            <TabsTrigger value='chat-gpt' className='rounded-2xl' disabled={!hasMacros}>
+            <TabsTrigger value='chat-gpt' className='rounded-2xl' disabled={!hasMeals}>
               IA
             </TabsTrigger>
             <TabsTrigger value='results' className='rounded-2xl' disabled={!hasDiet}>
