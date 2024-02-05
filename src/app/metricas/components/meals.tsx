@@ -51,7 +51,7 @@ const Meals = ({
               <td className='border text-center'>{carbohydrate}g</td>
               <td className='border text-center'>{protein}g</td>
               <td className='border text-center'>{fat}g</td>
-              <td className='border text-center'>{tmb}</td>
+              <td className='border text-center'>{tmb.toFixed(0)}</td>
             </tr>
           </tbody>
         </table>
