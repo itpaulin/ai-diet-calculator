@@ -19,6 +19,7 @@ function Metricas() {
   const [hasMeals, setHasMeals] = useState<boolean>(false)
   const [hasDiet, setHasDiet] = useState<boolean>(false)
 
+  const [quantityMeals, setQuantityMeals] = useState<number>(0)
   const [tmb, setTmb] = useState<number>(2000)
   const [personalInformations, setPersonalInformations] = useState<PersonalInformation>({
     weight: 70,
@@ -29,8 +30,10 @@ function Metricas() {
     setTab(value)
   }
 
+  console.log('🚀 ~ Metricas ~ quantityMeals:', quantityMeals)
   console.log('🚀 ~ Metricas ~ tmb:', tmb)
   console.log('🚀 ~ Metricas ~ macrosGrams:', macrosGrams)
+  console.log('🚀 ~ Metricas ~ personalInformations:', personalInformations)
   return (
     <>
       <div className='flex justify-center p-10'>
@@ -76,7 +79,13 @@ function Metricas() {
             />
           </TabsContent>
           <TabsContent value='meals'>
-            <Meals macros={macrosGrams} tmb={tmb} setTab={setTab} setHasMeals={setHasMeals} />
+            <Meals
+              macros={macrosGrams}
+              tmb={tmb}
+              setTab={setTab}
+              setHasMeals={setHasMeals}
+              setQuantityMeals={setQuantityMeals}
+            />
           </TabsContent>
           <TabsContent value='chat-gpt'>
             <AiResults />
