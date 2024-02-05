@@ -90,10 +90,10 @@ const Objective = ({ setTab, setHasObjective, setTmb }: ObjectiveProps) => {
             setTmb((prev) => prev * 1.05)
             break
           case wayToActiveObjectiveOptions.Bulking[1]:
-            setTmb((prev) => prev + 1.1)
+            setTmb((prev) => prev * 1.1)
             break
           case wayToActiveObjectiveOptions.Bulking[2]:
-            setTmb((prev) => prev + 1.15)
+            setTmb((prev) => prev * 1.15)
             break
         }
         break
