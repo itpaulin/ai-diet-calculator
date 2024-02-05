@@ -102,11 +102,11 @@ const Meals = ({
           </tbody>
         </table>
       </div>
-      <div className='flex justify-center p-4'>
+      {/* <div className='flex justify-center p-4'>
         <Button onClick={handleSubmit} className='w-[332px] p-4'>
           Seguir
         </Button>
-      </div>
+      </div> */}
     </>
   )
 }
