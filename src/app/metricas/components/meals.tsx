@@ -6,8 +6,10 @@ interface MealsProps {
   tmb: number
   setHasMeals: Dispatch<SetStateAction<boolean>>
   setTab: Dispatch<SetStateAction<string>>
+  setQuantityMeals: Dispatch<SetStateAction<number>>
 }
 const Meals = ({
+  setQuantityMeals,
   setTab,
   macros: { protein, fat, carbohydrate },
   tmb,
@@ -23,6 +25,11 @@ const Meals = ({
     equivalentCalories: number,
   ): string => {
     return Math.round((((value / quantity) * equivalentCalories) / (tmb / quantity)) * 100) + ' %'
+  }
+  const handleSubmit = () => {
+    setQuantityMeals(quantity)
+    setHasMeals(true)
+    setTab('chat-gpt')
   }
   return (
     <>
@@ -96,12 +103,7 @@ const Meals = ({
         </table>
       </div>
       <div className='flex justify-center p-4'>
-        <Button
-          onClick={() => {
-            setHasMeals(true), setTab('chat-gpt')
-          }}
-          className='w-[332px] p-4'
-        >
+        <Button onClick={handleSubmit} className='w-[332px] p-4'>
           Seguir
         </Button>
       </div>
