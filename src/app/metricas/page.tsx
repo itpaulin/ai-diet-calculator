@@ -7,9 +7,9 @@ import Macros from './components/macros'
 import Meals from './components/meals'
 import PersonalInformation from '@/models/personal-informations'
 import { Macros as IMacros } from '@/models/macros'
-import AiResults from './components/ai-results'
+
 function Metricas() {
-  const [tab, setTab] = useState<string>('macros')
+  const [tab, setTab] = useState<string>('tdee')
 
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
@@ -18,9 +18,9 @@ function Metricas() {
   const [hasDiet, setHasDiet] = useState<boolean>(false)
 
   const [quantityMeals, setQuantityMeals] = useState<number>(0)
-  const [tmb, setTmb] = useState<number>(2000)
+  const [tmb, setTmb] = useState<number>(0)
   const [personalInformations, setPersonalInformations] = useState<PersonalInformation>({
-    weight: 70,
+    weight: 0,
   })
   const [macrosGrams, setMacrosGrams] = useState<IMacros>({ protein: 0, fat: 0, carbohydrate: 0 })
 
@@ -32,7 +32,7 @@ function Metricas() {
     <>
       <div className='flex justify-center p-10'>
         <Tabs value={tab} onValueChange={onTabChange} className='w-[26rem]'>
-          <TabsList className='grid w-full grid-cols-6'>
+          <TabsList className='grid w-full grid-cols-4'>
             <TabsTrigger value='tdee' className='rounded-2xl'>
               TDEE
             </TabsTrigger>
@@ -44,12 +44,6 @@ function Metricas() {
             </TabsTrigger>
             <TabsTrigger value='meals' className='rounded-2xl' disabled={!hasMacros}>
               Refeições
-            </TabsTrigger>
-            <TabsTrigger value='chat-gpt' className='rounded-2xl' disabled={!hasMeals}>
-              IA
-            </TabsTrigger>
-            <TabsTrigger value='results' className='rounded-2xl' disabled={!hasDiet}>
-              Resultados
             </TabsTrigger>
           </TabsList>
           <TabsContent value='tdee'>
@@ -80,9 +74,6 @@ function Metricas() {
               setHasMeals={setHasMeals}
               setQuantityMeals={setQuantityMeals}
             />
-          </TabsContent>
-          <TabsContent value='chat-gpt'>
-            <AiResults />
           </TabsContent>
         </Tabs>
       </div>
