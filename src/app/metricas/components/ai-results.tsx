@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-
+import { useCompletion } from 'ai/react'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -22,12 +22,17 @@ const AiResults = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
-
+  const { completion, handleSubmit, input, handleInputChange } = useCompletion({
+    api: '/api/generate-diet',
+    initialInput: '',
+    body: {
+      changeMessage,
+    },
+  })
   useEffect(() => {
     //handle inicial com dados
   }, [])
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    //handle to OpenAI API
     setChanged(true)
   }
   return (
@@ -43,10 +48,7 @@ const AiResults = () => {
             </span>
           </h3>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className='flex flex-col justify-center space-y-6 pt-5'
-            >
+            <form onSubmit={handleSubmit} className='flex flex-col justify-center space-y-6 pt-5'>
               <FormField
                 control={form.control}
                 name='changeMessage'
@@ -56,6 +58,8 @@ const AiResults = () => {
                       <Textarea
                         placeholder='Faça uma mensagem curta e direta sobre as alterações'
                         {...field}
+                        value={input}
+                        onChange={handleInputChange}
                       />
                     </FormControl>
                     <FormMessage />

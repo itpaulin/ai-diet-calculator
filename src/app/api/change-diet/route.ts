@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     
     Porém quero fazer essas alterações: ${changes}. 
     
-    Me retorne somente a dieta com as devidas alterações.
+    Me retorne somente a dieta com as devidas alterações mantendo as mesmas métricas.
   `.trim()
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',

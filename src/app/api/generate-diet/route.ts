@@ -1,23 +1,20 @@
 import OpenAI from 'openai'
 import { OpenAIStream, StreamingTextResponse } from 'ai'
 
-// Optional, but recommended: run on the edge runtime.
-// See https://vercel.com/docs/concepts/functions/edge-functions
-export const runtime = 'edge'
-
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 })
 
 export async function POST(req: Request) {
-  // Extract the `messages` from the body of the request
-  const { messages } = await req.json()
+  const { metrics } = await req.json()
 
-  // Request the OpenAI API for the response based on the prompt
+  const prompt = `
+  Gere uma dieta com base nesses macronutrientes não ultrapassando a quantidade calorica nem as gramas do macronutriente mas batendo todas elas dividido por 4 refeicoes
+  `.trim()
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     stream: true,
-    messages: messages,
+    messages: [{ role: 'user', content: prompt }],
   })
 
   // Convert the response into a friendly text-stream
