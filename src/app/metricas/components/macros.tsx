@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 interface MacrosProps {
   setHasMacros: Dispatch<SetStateAction<boolean>>
+  setTab: Dispatch<SetStateAction<string>>
   weight: number
   tmb: number
   setMacrosGrams: Dispatch<SetStateAction<Macros>>
@@ -33,7 +34,7 @@ const FormSchemaPreset = z.object({
   protein: z.coerce.number().positive().max(2).min(1.6),
   fat: z.coerce.number().positive().max(1).min(0.5),
 })
-const Macros = ({ setHasMacros, weight, tmb, setMacrosGrams }: MacrosProps) => {
+const Macros = ({ setTab, setHasMacros, weight, tmb, setMacrosGrams }: MacrosProps) => {
   const form = useForm({
     resolver: zodResolver(FormSchemaCustom),
     defaultValues: {
@@ -56,8 +57,8 @@ const Macros = ({ setHasMacros, weight, tmb, setMacrosGrams }: MacrosProps) => {
       const carbohydrate = ((values.carbohydrate / 100) * tmb) / 4
       // using ~~ operator
       setMacrosGrams({ protein: ~~protein, fat: ~~fat, carbohydrate: ~~carbohydrate })
+      setHasMacros(true)
     }
-    setHasMacros(true)
   }
   const onSubmitPreset = (values: z.infer<typeof FormSchemaPreset>) => {
     const protein = Math.round(weight * values.protein)
@@ -67,6 +68,7 @@ const Macros = ({ setHasMacros, weight, tmb, setMacrosGrams }: MacrosProps) => {
     // usingo math round
     setMacrosGrams({ protein: protein, fat: fat, carbohydrate: carbohydrate })
     setHasMacros(true)
+    setTab('meals')
   }
   return (
     <div>

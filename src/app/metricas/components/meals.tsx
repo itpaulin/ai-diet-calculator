@@ -5,8 +5,14 @@ interface MealsProps {
   macros: Macros
   tmb: number
   setHasMeals: Dispatch<SetStateAction<boolean>>
+  setTab: Dispatch<SetStateAction<string>>
 }
-const Meals = ({ macros: { protein, fat, carbohydrate }, tmb, setHasMeals }: MealsProps) => {
+const Meals = ({
+  setTab,
+  macros: { protein, fat, carbohydrate },
+  tmb,
+  setHasMeals,
+}: MealsProps) => {
   const [mealPerDay, setMealPerDay] = useState<number[]>([2, 3, 4, 5, 6])
   const [quantity, setQuantity] = useState<number>(4)
   const handleQuantity = (value: number) => {
@@ -90,7 +96,12 @@ const Meals = ({ macros: { protein, fat, carbohydrate }, tmb, setHasMeals }: Mea
         </table>
       </div>
       <div className='flex justify-center p-4'>
-        <Button onClick={() => setHasMeals(true)} className='w-[332px] p-4'>
+        <Button
+          onClick={() => {
+            setHasMeals(true), setTab('chat-gpt')
+          }}
+          className='w-[332px] p-4'
+        >
           Seguir
         </Button>
       </div>

@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button'
 interface ObjectiveProps {
   setHasObjective: Dispatch<SetStateAction<boolean>>
   setTmb: Dispatch<SetStateAction<number>>
+  setTab: Dispatch<SetStateAction<string>>
 }
 const FormSchema = z
   .object({
@@ -40,7 +41,7 @@ const FormSchema = z
     },
   )
 
-const Objective = ({ setHasObjective, setTmb }: ObjectiveProps) => {
+const Objective = ({ setTab, setHasObjective, setTmb }: ObjectiveProps) => {
   const [objective, setObjective] = useState<TObjective>()
   const [options, setOptions] = useState<string[]>()
   const [label, setLabel] = useState<string>()
@@ -98,6 +99,7 @@ const Objective = ({ setHasObjective, setTmb }: ObjectiveProps) => {
         break
     }
     setHasObjective(true)
+    setTab('macros')
   }
   return (
     <div className=''>

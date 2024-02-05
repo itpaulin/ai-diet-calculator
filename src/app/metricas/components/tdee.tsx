@@ -31,6 +31,7 @@ interface TdeeProps {
   setHasTdee: Dispatch<SetStateAction<boolean>>
   setPayload: Dispatch<SetStateAction<number>>
   setUtils: Dispatch<SetStateAction<PersonalInformation>>
+  setTab: Dispatch<SetStateAction<string>>
 }
 
 export const tdeeSchema = z.object({
@@ -58,7 +59,7 @@ export const tdeeSchema = z.object({
   cardioIntensity: z.nativeEnum(CardioIntensity),
 })
 
-export const Tdee = ({ setHasTdee, setPayload, setUtils }: TdeeProps) => {
+export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) => {
   const [output, setOutput] = useState('')
   const [bmr, setBmr] = useState<number | boolean>()
   const [dailyCaloricBurn, setDailyCaloricBurn] = useState<number>()
@@ -142,6 +143,7 @@ export const Tdee = ({ setHasTdee, setPayload, setUtils }: TdeeProps) => {
     setOutput(JSON.stringify(values, null, 2))
     setHasTdee(true)
     setUtils({ weight: values.weight })
+    setTab('objective')
   }
   return (
     <>
