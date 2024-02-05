@@ -3,11 +3,11 @@ import { Raleway as FontSans, Kdam_Thmor_Pro as Kdam } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import './globals.css'
 
-export const fontSans = FontSans({
+const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
 })
-export const fontKdam = Kdam({
+const fontKdam = Kdam({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-kdam',
