@@ -1,9 +1,7 @@
 'use client'
-import { NavegationButtons } from '@/components/ui/navegation-buttons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Tdee } from './components/tdee'
-import { ITdee } from '@/models/tdee-interface'
 import Objective from './components/objective'
 import Macros from './components/macros'
 import Meals from './components/meals'
@@ -30,10 +28,6 @@ function Metricas() {
     setTab(value)
   }
 
-  console.log('🚀 ~ Metricas ~ quantityMeals:', quantityMeals)
-  console.log('🚀 ~ Metricas ~ tmb:', tmb)
-  console.log('🚀 ~ Metricas ~ macrosGrams:', macrosGrams)
-  console.log('🚀 ~ Metricas ~ personalInformations:', personalInformations)
   return (
     <>
       <div className='flex justify-center p-10'>
