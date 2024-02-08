@@ -82,7 +82,7 @@ function Metricas() {
             />
           </TabsContent>
           <TabsContent value='chat-gpt'>
-            <AiResults />
+            <AiResults quantityMeals={quantityMeals} macros={macrosGrams} tmb={tmb} />
           </TabsContent>
         </Tabs>
       </div>

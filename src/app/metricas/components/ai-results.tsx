@@ -9,6 +9,12 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
 import { useEffect, useState } from 'react'
+import { Macros } from '@/models/macros'
+interface AiResultsProps {
+  quantityMeals: number
+  macros: Macros
+  tmb: number
+}
 
 const FormSchema = z.object({
   changeMessage: z
@@ -16,21 +22,18 @@ const FormSchema = z.object({
     .max(500, { message: 'A alteração nao deve ultrapassar 500 caracteres' }),
 })
 
-const AiResults = () => {
+const AiResults = ({ quantityMeals, macros, tmb }: AiResultsProps) => {
   const [changeMessage, setChangeMessage] = useState<string>()
   const [changed, setChanged] = useState<boolean>(false)
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
-  const { completion, handleSubmit, input, handleInputChange } = useCompletion({
+  const { completion, input, stop, isLoading, handleInputChange, handleSubmit } = useCompletion({
     api: '/api/generate-diet',
-    initialInput: '',
-    body: {
-      changeMessage,
-    },
+    initialCompletion: `Faça uma dieta de ${tmb} calorias para mim com ${quantityMeals} refeições por dia batendo ${macros.protein}g de proteina, ${macros.carbohydrate}g de carboidrato e ${macros.fat}g de gordura`,
   })
   useEffect(() => {
-    //handle inicial com dados
+    handleSubmit
   }, [])
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     setChanged(true)
@@ -66,16 +69,11 @@ const AiResults = () => {
                   </FormItem>
                 )}
               />
-              <Button type='submit' disabled={!form.watch('changeMessage')}>
-                Submit
-              </Button>
+              <div className='flex items-center justify-center'>
+                <Button className='mt-5 p-5'>Enviar</Button>
+              </div>
             </form>
           </Form>
-        </div>
-      )}
-      {changeMessage && (
-        <div className='flex items-center justify-center'>
-          <Button className='mt-5 p-5'>Enviar</Button>
         </div>
       )}
     </ScrollArea>
