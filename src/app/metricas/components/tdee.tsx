@@ -48,7 +48,7 @@ export const tdeeSchema = z.object({
     .number()
     .int({ message: 'Arredonde seu peso, não utilize vírgulas ou ponto' })
     .positive(),
-  hasBF: z.coerce.boolean(),
+  hasBF: z.enum(['true', 'false']),
   bodyFat: z.coerce.number().positive().optional(),
   activityLevel: z.nativeEnum(ActivityLevel),
   weeklyWorkoutFrequency: z.coerce.number().int().nonnegative(),
@@ -67,7 +67,7 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
     resolver: zodResolver(tdeeSchema),
   })
   const handleBmr = (values: z.infer<typeof tdeeSchema>) => {
-    if (values.hasBF === true) {
+    if (values.hasBF === 'true') {
       if (values.bodyFat && values.bodyFat > 0) {
         setBmr(KatchMcArdle(values.weight, values.bodyFat))
       }
@@ -238,13 +238,13 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
                   >
                     <FormItem className='flex items-center space-x-3 space-y-0'>
                       <FormControl>
-                        <RadioGroupItem value={true} />
+                        <RadioGroupItem value={'true'} />
                       </FormControl>
                       <FormLabel className='font-normal'>Sim</FormLabel>
                     </FormItem>
                     <FormItem className='flex items-center space-x-3 space-y-0'>
                       <FormControl>
-                        <RadioGroupItem value={false} />
+                        <RadioGroupItem value='false' />
                       </FormControl>
                       <FormLabel className='font-normal'>Não</FormLabel>
                     </FormItem>
@@ -254,7 +254,7 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
               </FormItem>
             )}
           />
-          {form.watch('hasBF') && (
+          {form.watch('hasBF') === 'true' && (
             <FormField
               control={form.control}
               name='bodyFat'
@@ -262,7 +262,7 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
                 <FormItem className='flex flex-col'>
                   <div className='grid grid-cols-2'>
                     <FormLabel>Percentual de gordura</FormLabel>
-                    <FormControl className=''>
+                    <FormControl>
                       <Input type={'number'} placeholder='Em porcentagem' {...field} />
                     </FormControl>
                   </div>
