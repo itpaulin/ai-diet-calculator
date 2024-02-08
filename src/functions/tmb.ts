@@ -1,6 +1,6 @@
 import { ITdee } from '@/models/tdee-interface'
 
-export function MifflinStJeor({ age, gender, height, weight }: ITdee) {
+export function MifflinStJeor({ age, gender, hasBF, height, weight }: ITdee) {
   if (gender === 'Male') {
     return 10 * weight + 6.25 * height - 5 * age + 5
   }
