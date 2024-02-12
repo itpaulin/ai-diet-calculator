@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Raleway as FontSans, Kdam_Thmor_Pro as Kdam } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export const fontSans = FontSans({
   subsets: ['latin'],
@@ -21,7 +22,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en' className={fontKdam.variable}>
       <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-        {children}
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='light'
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
