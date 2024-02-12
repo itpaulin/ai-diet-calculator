@@ -4,11 +4,11 @@ import { cn } from '@/lib/utils'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 
-export const fontSans = FontSans({
+const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
 })
-export const fontKdam = Kdam({
+const fontKdam = Kdam({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-kdam',
