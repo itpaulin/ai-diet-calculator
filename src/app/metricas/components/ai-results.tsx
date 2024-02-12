@@ -13,6 +13,8 @@ import { Macros } from '@/models/macros'
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 interface AiResultsProps {
   quantityMeals: number
   macros: Macros
@@ -28,7 +30,7 @@ const FormSchema = z.object({
 const AiResults = ({ quantityMeals, macros, tmb }: AiResultsProps) => {
   const [changeMessage, setChangeMessage] = useState<string>()
   const [changed, setChanged] = useState<boolean>(false)
-  const [messages, setMessages] = useState<string>()
+  const [principalDiet, setPrincipalDiet] = useState<string>()
   const [isLoadingFirstDiet, setIsLoadingFirstDiet] = useState<boolean>(true)
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -51,22 +53,22 @@ const AiResults = ({ quantityMeals, macros, tmb }: AiResultsProps) => {
     })
       .then((res: Response) => res.text())
       .then((text: string) => {
-        setMessages(text)
+        setPrincipalDiet(text)
         setIsLoadingFirstDiet(false)
       })
   }, [])
 
   const changeDiet = useCallback(
     async ({ changeMessage }: z.infer<typeof FormSchema>) => {
-      const completion = await complete(changeMessage)
-      const requestString = `Essa é minha dieta ${messages!}, eu desejo fazer essas alterações: ${changeMessage}. Me devolva ela estruturada em forma de cardápio.`
+      const requestString = `Essa é minha dieta ${principalDiet!}, eu desejo fazer essas alterações: ${changeMessage}. Me devolva ela estruturada em forma de cardápio.`
+      const completion = await complete(requestString)
       if (!completion) throw new Error('Failed to change diet')
-      // setChanged(true)
-      // setMessages((messages) => [...messages!, completion])
     },
     [complete],
   )
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    setChanged(true)
+    setChangeMessage(data.changeMessage)
     changeDiet(data)
   }
   return (
@@ -80,58 +82,81 @@ const AiResults = ({ quantityMeals, macros, tmb }: AiResultsProps) => {
         </div>
       ) : (
         <ScrollArea>
-          <div className='py-10 pl-4 text-start '>
-            <p className='whitespace-pre-wrap'>{messages}</p>
+          <div className='flex gap-3 py-10  text-start'>
+            <Avatar className='h-8 w-8'>
+              <AvatarImage src='https://psc2.cf2.poecdn.net/assets/_next/static/media/chatGPTAvatar.04ed8443.png' />
+            </Avatar>
+            <p className='whitespace-pre-wrap'>{principalDiet}</p>
           </div>
+          {changeMessage != undefined && (
+            <>
+              <Separator />
+              <div className='flex items-center justify-end gap-3 py-10 text-end'>
+                <p className='whitespace-pre-wrap'>{changeMessage}</p>
+                <Avatar className='h-14 w-14'>
+                  <AvatarImage src='https://cdn.icon-icons.com/icons2/1260/PNG/512/1496676192-jd17_84602.png' />
+                </Avatar>
+              </div>
+            </>
+          )}
           {completion != '' && (
-            <div className='py-10 pl-4 text-start'>
-              <p className='whitespace-pre-wrap'>{completion}</p>
-            </div>
+            <>
+              <Separator />
+              <div className='flex gap-3 py-10 text-start'>
+                <Avatar className='h-8 w-8'>
+                  <AvatarImage src='https://psc2.cf2.poecdn.net/assets/_next/static/media/chatGPTAvatar.04ed8443.png' />
+                </Avatar>
+                <p className='whitespace-pre-wrap'>{completion}</p>
+              </div>
+            </>
           )}
           {!changed && (
-            <div className='flex flex-col'>
-              <h3 className='text-center '>
-                Gostaria de realizar alguma alteração no seu plano alimentar? ex: Trocar alimentos
-                ou declarar alergias alimentares
-                <span className='block font-semibold'>
-                  Aviso: Só será permitido alteração uma única vez
-                </span>
-              </h3>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className='flex flex-col justify-center space-y-6 pt-5'
-                >
-                  <FormField
-                    control={form.control}
-                    name='changeMessage'
-                    render={({ field }) => (
-                      <FormItem className='flex flex-col items-center justify-center text-center'>
-                        <FormControl>
-                          <Textarea
-                            placeholder='Faça uma mensagem curta e direta sobre as alterações'
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className='flex items-center justify-center'>
-                    <Button className='mt-5 p-5' type='submit' disabled={isLoading}>
-                      {isLoading === true ? (
-                        <>
-                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                          'Carregando'
-                        </>
-                      ) : (
-                        'Enviar'
+            <>
+              <Separator />
+              <div className='flex flex-col'>
+                <h3 className='text-center text-lg font-normal'>
+                  Gostaria de realizar alguma alteração no seu plano alimentar? ex: Trocar alimentos
+                  ou declarar alergias alimentares
+                  <span className='block pt-2 text-sm font-semibold'>
+                    Aviso: Só será permitido alteração uma única vez
+                  </span>
+                </h3>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className='flex flex-col justify-center space-y-6 pt-5'
+                  >
+                    <FormField
+                      control={form.control}
+                      name='changeMessage'
+                      render={({ field }) => (
+                        <FormItem className='flex flex-col items-center justify-center text-center'>
+                          <FormControl>
+                            <Textarea
+                              placeholder='Faça uma mensagem curta e direta sobre as alterações'
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
                       )}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </div>
+                    />
+                    <div className='flex items-center justify-center'>
+                      <Button className='mt-5 p-5' type='submit' disabled={isLoading}>
+                        {isLoading === true ? (
+                          <>
+                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                            Carregando
+                          </>
+                        ) : (
+                          'Enviar'
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </div>
+            </>
           )}
         </ScrollArea>
       )}
