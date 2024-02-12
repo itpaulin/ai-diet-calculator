@@ -32,7 +32,7 @@ function Metricas() {
     <>
       <div className='flex justify-center p-10'>
         <Tabs value={tab} onValueChange={onTabChange} className='w-[26rem]'>
-          <TabsList className='grid w-full grid-cols-6'>
+          <TabsList className='grid w-full grid-cols-5'>
             <TabsTrigger value='tdee' className='rounded-2xl'>
               TDEE
             </TabsTrigger>
@@ -47,9 +47,6 @@ function Metricas() {
             </TabsTrigger>
             <TabsTrigger value='chat-gpt' className='rounded-2xl' disabled={!hasMeals}>
               IA
-            </TabsTrigger>
-            <TabsTrigger value='results' className='rounded-2xl' disabled={!hasDiet}>
-              Resultados
             </TabsTrigger>
           </TabsList>
           <TabsContent value='tdee'>
