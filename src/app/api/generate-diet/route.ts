@@ -8,15 +8,23 @@ const openai = new OpenAI({
 export const runtime = 'edge'
 
 export async function POST(req: Request) {
-  const { messages } = await req.json()
+  const { prompt } = await req.json()
 
   const response = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
-    stream: true,
-    messages,
+    messages: [
+      {
+        role: 'system',
+        content: `Você é um nutricionista que calcula dietas baseado no número de calorias e macros nutrientes que eles te fornecem. As refeições são baseadas na alimentação brasileira.`,
+      },
+      {
+        role: 'user',
+        content: ` ${prompt} `,
+      },
+    ],
   })
 
-  const stream = OpenAIStream(response)
-
-  return new StreamingTextResponse(stream)
+  return new Response(response.choices[0].message.content, {
+    headers: { 'content-type': 'application/json' },
+  })
 }
