@@ -28,19 +28,31 @@ const AiResults = ({ quantityMeals, macros, tmb }: AiResultsProps) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
-  const { completion, input, stop, isLoading, handleInputChange, handleSubmit } = useCompletion({
-    api: '/api/generate-diet',
-    initialCompletion: `Faça uma dieta de ${tmb} calorias para mim com ${quantityMeals} refeições por dia batendo ${macros.protein}g de proteina, ${macros.carbohydrate}g de carboidrato e ${macros.fat}g de gordura`,
+  const { completion, input, isLoading, handleInputChange, handleSubmit } = useCompletion({
+    api: '/api/change-diet',
+    onFinish: () => {
+      setChanged(true)
+    },
   })
   useEffect(() => {
-    handleSubmit
+    fetch('api/generate-diet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: `Faça uma dieta de ${tmb} calorias para mim com ${quantityMeals} refeições por dia batendo ${macros.protein}g de proteina, ${macros.carbohydrate}g de carboidrato e ${macros.fat}g de gordura.`,
+      }),
+    })
+      .then((res: Response) => res.text())
+      .then((text: string) => {
+        console.log(text)
+      })
   }, [])
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    setChanged(true)
-  }
   return (
     <ScrollArea>
-      <div className='py-10 pl-4 text-start'>seu plano alimentar: -TAL -Tal -Tal</div>
+      <div className='py-10 pl-4 text-start'></div>
+      {completion != '' && <div className='py-10 pl-4 text-start'>{completion}</div>}
       {!changed && (
         <div className='flex flex-col'>
           <h3 className='text-center '>
@@ -70,7 +82,9 @@ const AiResults = ({ quantityMeals, macros, tmb }: AiResultsProps) => {
                 )}
               />
               <div className='flex items-center justify-center'>
-                <Button className='mt-5 p-5'>Enviar</Button>
+                <Button className='mt-5 p-5' type='submit' disabled={isLoading}>
+                  Enviar
+                </Button>
               </div>
             </form>
           </Form>
