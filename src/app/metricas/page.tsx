@@ -8,19 +8,19 @@ import Meals from './components/meals'
 import PersonalInformation from '@/models/personal-informations'
 import { Macros as IMacros } from '@/models/macros'
 import AiResults from './components/ai-results'
+import { ModeToggle } from '@/components/ui/mode-toggle'
 function Metricas() {
-  const [tab, setTab] = useState<string>('macros')
+  const [tab, setTab] = useState<string>('tdee')
 
   const [hasTdee, setHasTdee] = useState<boolean>(false)
   const [hasObjective, setHasObjective] = useState<boolean>(false)
   const [hasMacros, setHasMacros] = useState<boolean>(false)
   const [hasMeals, setHasMeals] = useState<boolean>(false)
-  const [hasDiet, setHasDiet] = useState<boolean>(false)
 
   const [quantityMeals, setQuantityMeals] = useState<number>(0)
-  const [tmb, setTmb] = useState<number>(2000)
+  const [tmb, setTmb] = useState<number>(0)
   const [personalInformations, setPersonalInformations] = useState<PersonalInformation>({
-    weight: 70,
+    weight: 0,
   })
   const [macrosGrams, setMacrosGrams] = useState<IMacros>({ protein: 0, fat: 0, carbohydrate: 0 })
 
@@ -31,6 +31,9 @@ function Metricas() {
   return (
     <>
       <div className='flex justify-center p-10'>
+        <div className='absolute right-0 top-2'>
+          <ModeToggle />
+        </div>
         <Tabs value={tab} onValueChange={onTabChange} className='w-[26rem]'>
           <TabsList className='grid w-full grid-cols-5'>
             <TabsTrigger value='tdee' className='rounded-2xl'>
