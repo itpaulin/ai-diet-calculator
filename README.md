@@ -21,7 +21,12 @@ Bem-vindo à minha Calculadora de Macros e Gerador de Dietas! Este projeto foi i
 
   - A interface do usuário é construída com o auxílio do ShadCN UI, complementado pelo poderoso framework de estilo Tailwind. Isso resulta em uma interface moderna, responsiva e visualmente atraente.
 
+- **React Hook Form e Zod:**
+
+  - Poderosa combinação de bibliotecas para criação de formulários avançados, com validação, estados, controle de submissão, caching, etc.
+
 - **API do ChatGPT:**
+
   - A integração com a API do ChatGPT permite que o aplicativo forneça sugestões inteligentes e personalizadas para as dietas dos usuários.
 
 ### Como Iniciar

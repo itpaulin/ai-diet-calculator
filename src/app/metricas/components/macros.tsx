@@ -58,6 +58,7 @@ const Macros = ({ setTab, setHasMacros, weight, tmb, setMacrosGrams }: MacrosPro
       // using ~~ operator
       setMacrosGrams({ protein: ~~protein, fat: ~~fat, carbohydrate: ~~carbohydrate })
       setHasMacros(true)
+      setTab('meals')
     }
   }
   const onSubmitPreset = (values: z.infer<typeof FormSchemaPreset>) => {

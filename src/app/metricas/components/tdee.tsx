@@ -16,9 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 import Gender from '@/enums/Gender'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { ITdee } from '@/models/tdee-interface'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { KatchMcArdle, MifflinStJeor } from '@/functions/tmb'
 import { Badge } from '@/components/ui/badge'
 import ActivityLevel from '@/enums/ActivityLevel'
@@ -48,7 +46,7 @@ export const tdeeSchema = z.object({
     .number()
     .int({ message: 'Arredonde seu peso, não utilize vírgulas ou ponto' })
     .positive(),
-  hasBF: z.coerce.boolean(),
+  hasBF: z.enum(['true', 'false']),
   bodyFat: z.coerce.number().positive().optional(),
   activityLevel: z.nativeEnum(ActivityLevel),
   weeklyWorkoutFrequency: z.coerce.number().int().nonnegative(),
@@ -65,22 +63,9 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
   const [dailyCaloricBurn, setDailyCaloricBurn] = useState<number>()
   const form = useForm<z.infer<typeof tdeeSchema>>({
     resolver: zodResolver(tdeeSchema),
-    defaultValues: {
-      age: undefined,
-      bodyFat: undefined,
-      height: undefined,
-      weight: undefined,
-      hasBF: undefined,
-      activityLevel: undefined,
-      weeklyWorkoutFrequency: undefined,
-      weeklyCardioFrequency: undefined,
-      workoutIntensity: undefined,
-      cardioIntensity: undefined,
-      cardioTime: undefined,
-    },
   })
   const handleBmr = (values: z.infer<typeof tdeeSchema>) => {
-    if (values.hasBF === true) {
+    if (values.hasBF === 'true') {
       if (values.bodyFat && values.bodyFat > 0) {
         setBmr(KatchMcArdle(values.weight, values.bodyFat))
       }
@@ -144,7 +129,15 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
     setHasTdee(true)
     setUtils({ weight: values.weight })
     setTab('objective')
+    localStorage.setItem('FORM_DATA', JSON.stringify(values))
   }
+  useEffect(() => {
+    const data = localStorage.getItem('FORM_DATA')
+    if (data) {
+      const parsedData = JSON.parse(data)
+      form.reset(parsedData)
+    }
+  }, [])
   return (
     <>
       <Form {...form}>
@@ -243,13 +236,13 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
                   >
                     <FormItem className='flex items-center space-x-3 space-y-0'>
                       <FormControl>
-                        <RadioGroupItem value={true} />
+                        <RadioGroupItem value={'true'} />
                       </FormControl>
                       <FormLabel className='font-normal'>Sim</FormLabel>
                     </FormItem>
                     <FormItem className='flex items-center space-x-3 space-y-0'>
                       <FormControl>
-                        <RadioGroupItem value={false} />
+                        <RadioGroupItem value='false' />
                       </FormControl>
                       <FormLabel className='font-normal'>Não</FormLabel>
                     </FormItem>
@@ -259,7 +252,7 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
               </FormItem>
             )}
           />
-          {form.watch('hasBF') && (
+          {form.watch('hasBF') === 'true' && (
             <FormField
               control={form.control}
               name='bodyFat'
@@ -267,7 +260,7 @@ export const Tdee = ({ setTab, setHasTdee, setPayload, setUtils }: TdeeProps) =>
                 <FormItem className='flex flex-col'>
                   <div className='grid grid-cols-2'>
                     <FormLabel>Percentual de gordura</FormLabel>
-                    <FormControl className=''>
+                    <FormControl>
                       <Input type={'number'} placeholder='Em porcentagem' {...field} />
                     </FormControl>
                   </div>
